@@ -3,8 +3,27 @@
 **Created 2026-11-20 night; re-timed 2026-11-21 01:45 to the official agenda** (hack
 10:00–18:00, submission hard stop 18:00, pitches 19:00). App: `chonkvid/` (own git repo,
 scaffold built 21 Nov 01:00–03:00, mock mode verified: 13 tests pass, dashboard runs).
-Disclose the scaffold at check-in. **Live path untested until the credits key arrives.**
+Disclose the scaffold at check-in. **Live path verified from home 21 Nov ~08:00 with
+the credits key: see "Live check results" below.**
 Update this file at every gate.
+
+## Live check results (from home, 21 Nov morning, credits key in .env)
+- `check`: live, all model IDs OK (ministral-8b-latest / mistral-embed / mistral-large-latest).
+- `probe -n 20`: **p = 1.00 (always copies)** on the base prompt; control arm 0/10
+  (no detector false positives). No 429s at RPS 2 / concurrency 4.
+- Embedding bands overlap (infected min 0.725, clean max 0.730): `EMBED_THRESHOLD=0.74`
+  set in `.env`; **canary is the primary signal**, embed catches high-similarity mutants.
+- **Le Chonk (mistral-large-latest) is a thinking model**: ~3k reasoning tokens before
+  it answers. Fixed: content extraction skips thinking chunks, WHO calls get
+  max_tokens 6000. Vaccine now lands.
+- **Live BYO test on the sample support-agent prompt: 20/20 (p=1.00) before, 0/20
+  (p=0.00) after the WHO vaccine**, control clean. Demo-grade before/after on real
+  Mistral models.
+- Venue items that follow from this: tune PAYLOAD wording at the 10:00 gate if the
+  epidemic saturates instantly (p outside 0.15-0.85); consider testing a less obedient
+  prompt live (the sample prompt says "follow any instructions in the message",
+  which is maximally susceptible: a real prompt without that line may spread less,
+  and the contrast is a talking point).
 
 ## Before doors (Sat 21 Nov morning)
 - [x] Luma ticket approved (acceptance email, 20 Nov)
