@@ -27,6 +27,7 @@ Luma QR and ID; submission hard stop 18:00. Day plan: command-centre/11-executio
 | FUNNEL-FINAL-VERDICT.md | The blind 100-seed funnel: clusters, gates, collision corpus, pairwise verdict |
 | PASS1-SANITIZED-BRIEF.md | The sanitized brief the four isolated ideators received |
 | ENGINE-RUN-RECONCILIATION.md | Why the HackForge engine's own pick was rejected on its own red team's findings |
+| chonkvid/ | The app (own git repo, git-ignored here so it can go public alone). See its README |
 | command-centre/ | 10-file execution centre for the build day (01–04, 06, 07, 09–11, 13) |
 | evidence/hackforge-run/ | Raw engine outputs: final recommendation, collision, feasibility |
 | evidence/briefs/ | The engine brief as submitted |

@@ -27,8 +27,8 @@ and goes on the check-in question list below.
 | Bring | laptop, charger, Luma QR, ID |
 
 ## UNKNOWN: ask at check-in (first thing, before writing code)
-1. Can any code or scaffolding be prepared beforehand? **Default: no.** Write all code
-   at the venue. Design docs (this folder) are fine.
+1. Can code prepared beforehand be used? **We have a scaffold** (`chonkvid/`, built the
+   night before). Disclose it first thing and follow the answer.
 2. Submission format at 18:00: repo link, form, deployed URL, video? (Submission is
    confirmed; the format is not.)
 3. Pitch length and Q&A length (pitches 19:00–21:00; finals format?).
@@ -44,7 +44,7 @@ and goes on the check-in question list below.
 | 2 | Team of 3–5 confirmed | OPEN | You / on the spot |
 | 3 | Event credits redeemed + real rate limits checked | at check-in (link shared on the day) | You |
 | 4 | Check-in questions 1–7 answered | at doors | Pitch lead |
-| 5 | All code written at the venue (fresh repo, first commit after 10:00 hack start) | planned | Team |
+| 5 | **Scaffold prepared 20–21 Nov night** (sim, mock mode, dashboard in `chonkvid/`); disclose to mentors at check-in and ask if it's OK; if not, rebuild live from the design | at check-in | You |
 | 8 | Project submitted before 18:00 hard stop | planned (submit by 17:45) | Pitch lead |
 | 9 | Joined Discord #hackathon-access | OPEN | You, before doors |
 | 6 | Mistral models load-bearing in the build | planned (Ministral, mistral-embed, Le Chonk) | Team |

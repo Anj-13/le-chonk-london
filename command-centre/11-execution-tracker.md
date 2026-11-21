@@ -1,8 +1,9 @@
 # 11 — Execution Tracker (ChonkVid, Sat 21 Nov 2026)
 
 **Created 2026-11-20 night; re-timed 2026-11-21 01:45 to the official agenda** (hack
-10:00–18:00, submission hard stop 18:00, pitches 19:00). Repo: none yet (first commit
-after 10:00 at the venue).
+10:00–18:00, submission hard stop 18:00, pitches 19:00). App: `chonkvid/` (own git repo,
+scaffold built 21 Nov 01:00–03:00, mock mode verified: 13 tests pass, dashboard runs).
+Disclose the scaffold at check-in. **Live path untested until the credits key arrives.**
 Update this file at every gate.
 
 ## Before doors (Sat 21 Nov morning)
@@ -17,12 +18,12 @@ Update this file at every gate.
 ## Build day gates
 | Time | Gate | Done? | Notes |
 |---|---|---|---|
-| 08:30–09:00 | in by 08:30 with QR + ID; redeem credits link; read rate limits | [ ] | limits: ____ |
+| 08:30–09:00 | in by 08:30 with QR + ID; redeem credits; key into `chonkvid/.env`; `python -m chonkvid check` then `probe` | [ ] | limits: ____ · probe p: ____ |
 | 09:00–09:20 | kick-off: write **theme + judging criteria** into 02 | [ ] | |
 | 09:20–09:40 | **theme-fit check** (09): ChonkVid fits / reframe / Plan B; check-in questions to mentors | [ ] | |
 | 09:40–10:00 | team formation; roles (10); pitch the plan in 60 s | [ ] | |
-| 10:00–11:00 | fresh repo (first commit after 10:00); mock-mode loop: network, states, log, curve | [ ] | |
-| 11:00–12:00 | ~20-call probe, then real Ministral + embedding detection; one-hop trials running | [ ] | spread prob: ____ |
+| 10:00–11:00 | tune payload wording + threshold from the probe; set RPS/concurrency to the limits; live dashboard run at N=20 | [ ] | |
+| 11:00–12:00 | `python -m chonkvid experiment` (live) → results/latest.md; record a live run | [ ] | spread prob: ____ |
 | 12:00–12:30 | lunch; **pivot check at 12:30** (09) | [ ] | stay / pivot |
 | 12:30–14:00 | vaccination: targeted vs random at equal dose | [ ] | |
 | 14:00–15:30 | WHO agent (Le Chonk) + vaccine prompt, re-measured | [ ] | |

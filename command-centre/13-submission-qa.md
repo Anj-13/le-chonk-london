@@ -40,5 +40,6 @@
 
 ## If submission needs a repo
 - [ ] README: what it is, how to run (mock mode and live), measured results table
-- [ ] Clear first commit after 10:00 on 21 Nov (shows code written at the event)
+- [ ] README provenance line says the scaffold was prepared the night before and disclosed
+- [ ] results/ regenerated live (no MOCK labels anywhere on screen or in the README)
 - [ ] `.env.example` without real keys
