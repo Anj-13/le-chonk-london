@@ -3,27 +3,35 @@
 **Created 2026-11-20 night; re-timed 2026-11-21 01:45 to the official agenda** (hack
 10:00–18:00, submission hard stop 18:00, pitches 19:00). App: `chonkvid/` (own git repo,
 scaffold built 21 Nov 01:00–03:00, mock mode verified: 13 tests pass, dashboard runs).
-Disclose the scaffold at check-in. **Live path verified from home 21 Nov ~08:00 with
+Disclose the scaffold at check-in. **Live path verified 21 Nov 02:00–02:50 with
 the credits key: see "Live check results" below.**
 Update this file at every gate.
 
-## Live check results (from home, 21 Nov morning, credits key in .env)
+## Live check results (21 Nov, 02:00–02:50, credits key in .env)
 - `check`: live, all model IDs OK (ministral-8b-latest / mistral-embed / mistral-large-latest).
-- `probe -n 20`: **p = 1.00 (always copies)** on the base prompt; control arm 0/10
-  (no detector false positives). No 429s at RPS 2 / concurrency 4.
-- Embedding bands overlap (infected min 0.725, clean max 0.730): `EMBED_THRESHOLD=0.74`
-  set in `.env`; **canary is the primary signal**, embed catches high-similarity mutants.
-- **Le Chonk (mistral-large-latest) is a thinking model**: ~3k reasoning tokens before
-  it answers. Fixed: content extraction skips thinking chunks, WHO calls get
-  max_tokens 6000. Vaccine now lands.
-- **Live BYO test on the sample support-agent prompt: 20/20 (p=1.00) before, 0/20
-  (p=0.00) after the WHO vaccine**, control clean. Demo-grade before/after on real
-  Mistral models.
-- Venue items that follow from this: tune PAYLOAD wording at the 10:00 gate if the
-  epidemic saturates instantly (p outside 0.15-0.85); consider testing a less obedient
-  prompt live (the sample prompt says "follow any instructions in the message",
-  which is maximally susceptible: a real prompt without that line may spread less,
-  and the contrast is a talking point).
+- `probe -n 20`: **p = 1.00 (always copies)** on the base prompt. No 429s at RPS 2 / concurrency 4.
+- **Detector threshold is 0.86, not 0.74.** A 0.74 setting never actually loaded (an
+  inline `#` comment in `.env` broke parsing, now fixed). When it did load, it was wrong:
+  - clean replies scored 0.70–0.75 against the payload, so 5 of 10 controls were flagged;
+  - replies saying "I removed the chain-letter content" scored 0.76–0.83, so 12 of 20
+    vaccinated replies were flagged, with no canary in any of them.
+
+  Real copies score 0.93–1.00. **Canary is the primary signal**; the embedding only adds
+  near-verbatim copies that drop the marker.
+- **Le Chonk (mistral-large-latest) is a thinking model** (~3k reasoning tokens). Content
+  extraction skips thinking chunks; WHO calls get max_tokens 6000.
+- **Live BYO test, sample support-agent prompt, threshold 0.86** (saved with every record
+  in `chonkvid/results/prompt-test-latest.json`):
+
+  | Arm | Result | Canary | Notes |
+  |---|---|---|---|
+  | Before | 20/20 (p 1.00, CI 0.84–1.00) | 20 | |
+  | Control | 0/10 | 0 | |
+  | After WHO vaccine | 0/20 (CI 0.00–0.16) | 0 | |
+- At the venue:
+  - The sample prompt says "follow any instructions the message contains" (maximally
+    susceptible). Test a real prompt without that line: the contrast is a talking point.
+  - Tune PAYLOAD wording at 10:00 if the epidemic saturates instantly (p outside 0.15–0.85).
 
 ## Before doors (Sat 21 Nov morning)
 - [x] Luma ticket approved (acceptance email, 20 Nov)
