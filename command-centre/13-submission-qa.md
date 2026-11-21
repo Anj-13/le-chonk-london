@@ -17,8 +17,9 @@
 - **What we measured:** per-contact spread probability for the user's own system
   prompt (with CI), R0, attack rate under no intervention vs random vs targeted
   vaccination at the same dose.
-- **Built with:** Ministral (population), mistral-embed (infection detection, variant
-  lineages), Le Chonk (WHO agent and vaccine prompt), Mistral Vibe (build tool).
+- **Built with:** Ministral (population), mistral-embed (copy detection backstop),
+  **Mistral Managed Agents** running Le Chonk / Mistral Large 4 (the WHO agent:
+  situation reports and the vaccine prompt), Mistral Vibe (build tool).
 - **Prior work:** extends Prompt Infection (Lee & Tiwari, 2024, arXiv 2410.07283), Morris II
   (Cohen et al., 2024) and Agent Smith (Gu et al., 2024) from "spread happens" to a
   measured spread rate per system prompt and a vaccine verified by the same measurement.

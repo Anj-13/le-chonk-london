@@ -92,8 +92,13 @@ _Paste `results/latest.md` from the live `experiment` run here before submitting
 ## Built with
 
 - **Ministral**: the agent population.
-- **mistral-embed**: infection detection and variant lineages.
-- **Le Chonk / Mistral Large**: the WHO agent (situation reports, vaccine synthesis).
+- **mistral-embed**: backstop detection of near-verbatim copies that drop the marker.
+- **Mistral Managed Agents + Le Chonk (Mistral Large 4)**: the WHO is a Managed Agent
+  (`mistralai-agents`, `chonkvid/who_agent.py`) running `mistral-large-4`. It writes the
+  situation reports and the vaccine prompt, and each vaccine is then re-measured with
+  the same trials. It is text-only: no sandbox, built-ins off, tool calls denied. If the
+  SDK is missing it falls back to chat completions, and the results say which backend
+  wrote the vaccine. `WHO_VIA_AGENT=0` forces chat completions.
 - **Mistral Vibe**: build tool.
 
 Model IDs are set in `.env`.

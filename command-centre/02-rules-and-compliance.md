@@ -73,6 +73,6 @@ and goes on the check-in question list below.
 | 8 | Project submitted before 18:00 hard stop | planned (submit by 17:45) | Pitch lead |
 | 9 | Joined Discord (discord.gg/mistralai) | OPEN | You |
 | 10 | Demo video recorded and attached to the submission | OPEN (by 17:15) | Pitch lead |
-| 11 | Mistral Agents used and named in the pitch (Bonus_02) | planned: WHO agent | Team |
+| 11 | Mistral Agents used and named in the pitch (Bonus_02) | **BUILT** 21 Nov: WHO is a Mistral Managed Agent (`mistralai-agents`, `chonkvid/who_agent.py`, mistral-large-4); classic REST agents are closed for this org ("Use Managed Agents instead"). Say it in the pitch: "the WHO is a Mistral Managed Agent on Le Chonk" | Pitch lead |
 | 6 | Mistral models load-bearing in the build | planned (Ministral, mistral-embed, Le Chonk) | Team |
 | 7 | Safety framing stated in the first sentence of the pitch | planned | Pitch lead |
