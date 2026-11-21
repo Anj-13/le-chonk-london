@@ -29,6 +29,12 @@ def index():
     return FileResponse(WEB / "index.html")
 
 
+@app.get("/world")
+def world_view():
+    """Plague-Inc-style world map front-end over the same /ws/run feed."""
+    return FileResponse(WEB / "world" / "index.html")
+
+
 @app.get("/api/status")
 def status():
     s = settings()
