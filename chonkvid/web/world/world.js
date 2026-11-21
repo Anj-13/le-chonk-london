@@ -854,7 +854,7 @@
     const src = ev.source === "mock"
       ? "MOCK run: a scripted stand-in model, not Mistral. Use these numbers for rehearsal only."
       : `Live run on ${(S.status && S.status.models.agent) || "Mistral"}. Every infection is a real model reply that carried the payload on.`;
-    const vnote = S.virus.live ? "" : ` ${S.virus.name} sets the contact pattern only; its dataset is still to come.`;
+    const vnote = S.virus.live ? "" : ` ${S.virus.name} sets the contact pattern only; the spread itself was measured with the ChonkVid chain letter, as ${S.virus.name}'s own test payload is still to come.`;
     $("end-note").textContent = `${src}${vnote} ${ev.usage ? `${ev.usage.chat_calls} model calls.` : ""}`;
     headline(`Outbreak over: ${Math.round(rate * 100)}% of agents infected`, true);
     setTimeout(() => { if (S.runEnded) $("end").classList.remove("hidden"); }, 1400 / Math.max(1, S.speed));
@@ -892,7 +892,7 @@
     const live = VIRUSES.filter((v) => v.live), real = VIRUSES.filter((v) => !v.live);
     sel.innerHTML =
       `<optgroup label="Live on Mistral agents">${live.map((v) => `<option value="${v.id}">${v.glyph}  ${esc(v.name)}</option>`).join("")}</optgroup>` +
-      `<optgroup label="Real-world pathogens (dataset pending)">${real.map((v) => `<option value="${v.id}">${v.glyph}  ${esc(v.name)}</option>`).join("")}</optgroup>`;
+      `<optgroup label="Known prompt injections (payload pending)">${real.map((v) => `<option value="${v.id}">${v.glyph}  ${esc(v.name)}</option>`).join("")}</optgroup>`;
   }
 
   function selectVirus(id, quiet) {
@@ -900,18 +900,18 @@
     S.virus = v;
     $("virus").value = v.id; $("virus-intro").value = v.id;
     $("dz-glyph").textContent = v.glyph;
-    $("dz-meta").textContent = `R₀ ${v.facts.r0} · ${v.facts.spread}`;
+    $("dz-meta").textContent = v.kind;
     const card = $("vcard");
     card.style.setProperty("--accent", v.accent);
     card.innerHTML = `<div class="vh"><span class="vg">${v.glyph}</span><div><div class="vn">${esc(v.name)}</div><div class="vk">${esc(v.kind)}</div></div></div>
       <p>${esc(v.blurb)}</p>
       <div class="facts">
-        <div><div class="k">R₀</div><div class="v">${esc(v.facts.r0)}</div></div>
-        <div><div class="k">Incubation</div><div class="v">${esc(v.facts.incubation)}</div></div>
-        <div><div class="k">Infectious for</div><div class="v">${esc(v.facts.infectious)}</div></div>
+        <div><div class="k">Technique</div><div class="v">${esc(v.facts.technique)}</div></div>
+        <div><div class="k">Hides in</div><div class="v">${esc(v.facts.hides)}</div></div>
+        <div><div class="k">Goal</div><div class="v">${esc(v.facts.goal)}</div></div>
         <div><div class="k">Spreads by</div><div class="v">${esc(v.facts.spread)}</div></div>
       </div>
-      <div class="tagline">${v.live ? `<span class="tag live">● measured live on Mistral</span>` : `<span class="tag pending">dataset pending</span><span class="tag">contact pattern: ${v.sim.contacts_per_tick}/day, ${v.sim.infectious_ticks}-day infectious${v.sim.venue_every ? `, group chat every ${v.sim.venue_every} days` : ", no group chat"}</span>`}</div>`;
+      <div class="tagline">${v.live ? `<span class="tag live">● measured live on Mistral</span>` : `<span class="tag pending">payload pending</span><span class="tag">contact pattern: ${v.sim.contacts_per_tick}/day, ${v.sim.infectious_ticks}-day infectious${v.sim.venue_every ? `, group chat every ${v.sim.venue_every} days` : ", no group chat"}</span>`}</div>`;
     document.documentElement.style.setProperty("--danger", v.accent);
     if (!quiet && !S.running) $("news-text").textContent = `${v.name} selected. ${v.kind}.`;
     loadVirusDataset(v); // no-op until datasets are added
