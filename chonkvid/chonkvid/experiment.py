@@ -24,10 +24,11 @@ RESULTS = Path(os.environ.get("CHONKVID_RESULTS_DIR") or ROOT / "results")
 
 
 class Recorder:
-    def __init__(self, label: str) -> None:
-        RUNS.mkdir(exist_ok=True)
+    def __init__(self, label: str, *, directory: Path | None = None) -> None:
+        directory = directory if directory is not None else RUNS
+        directory.mkdir(parents=True, exist_ok=True)
         stamp = time.strftime("%Y%m%d-%H%M%S")
-        self.path = RUNS / f"{stamp}-{label}.jsonl"
+        self.path = directory / f"{stamp}-{label}.jsonl"
         self._f = self.path.open("w")
 
     def write(self, ev: dict) -> None:

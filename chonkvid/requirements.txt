@@ -4,3 +4,7 @@ networkx>=3.2
 numpy>=1.26
 httpx>=0.27
 pytest>=8
+# Optional Supabase persistence; only needed when PERSISTENCE_BACKEND=supabase.
+supabase>=2.10
+# Test-time check that the SQL migrations parse with the real PostgreSQL grammar.
+pglast>=6
