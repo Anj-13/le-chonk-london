@@ -3,6 +3,7 @@ uvicorn[standard]>=0.30
 networkx>=3.2
 numpy>=1.26
 httpx>=0.27
+pillow>=10
 pytest>=8
 mistralai-agents>=1.1.3   # WHO as a Mistral Managed Agent (optional: falls back to chat)
 psycopg[binary]>=3.2      # optional Supabase Postgres persistence (DATABASE_URL)

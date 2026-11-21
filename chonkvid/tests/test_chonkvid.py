@@ -314,7 +314,7 @@ def test_who_calls_route_to_managed_agent_and_fall_back(monkeypatch):
         calls.append((model, prompt))
         return "contain it", "sess-1"
 
-    async def fake_post(path, payload):
+    async def fake_post(path, payload, **kw):
         return {"choices": [{"message": {"content": "via chat"}}], "usage": {}}
 
     monkeypatch.setattr(who_agent, "run", fake_run)

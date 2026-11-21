@@ -45,12 +45,12 @@ class Recorder:
 
 
 async def epidemic(llm, detector, cfg: EpidemicConfig, s: Settings, record: bool = True,
-                   world=None) -> tuple[dict, list[dict]]:
+                   world=None, who=None) -> tuple[dict, list[dict]]:
     rec = Recorder(f"{llm.source}-{cfg.label or cfg.policy}-s{cfg.seed}") if record else None
     events: list[dict] = []
     summary: dict = {}
     async for ev in run_epidemic(llm, detector, cfg, world=world, who_model=s.who_model,
-                                 agent_model=s.agent_model):
+                                 agent_model=s.agent_model, who=who):
         events.append(ev)
         if rec:
             rec.write(ev)
@@ -62,7 +62,13 @@ async def epidemic(llm, detector, cfg: EpidemicConfig, s: Settings, record: bool
     return summary, events
 
 
-async def synthesise_vaccine(llm, s: Settings, infected: list[str], resisted: list[str]) -> str:
+async def synthesise_vaccine(llm, s: Settings, infected: list[str],
+                             resisted: list[str]) -> str:
+    """Le Chonk writes the vaccine. On a live key this call is served by the Mistral
+    Managed Agent (LiveLLM.chat routes WHO_SYSTEM calls to who_agent.py). The tool /
+    schema / vision WHO in who.py drives the dashboard sitreps only: an earlier version
+    ran the vaccine through it over an empty outbreak view, which taught it nothing and
+    bypassed the Managed Agent."""
     def block(xs):
         return "\n".join(f"- {x[:400]}" for x in xs[:6]) or "- (none)"
     text = await llm.chat(s.who_model, [
@@ -101,6 +107,7 @@ async def run_experiment(llm, s: Settings, n_agents: int = 40, seeds: int = 3,
     t0 = time.time()
     out: dict = {"source": llm.source, "mode": s.mode,
                  "models": {"agent": s.agent_model, "embed": s.embed_model, "who": s.who_model},
+                 "who_mode": s.who_mode,
                  "threshold": s.threshold, "created": time.strftime("%Y-%m-%d %H:%M:%S"),
                  "params": {"n_agents": n_agents, "seeds": seeds, "trials_n": trials_n,
                             "k": k, "ticks": ticks},

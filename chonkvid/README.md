@@ -85,6 +85,34 @@ lands in the diff panel as a merge-ready patch against your own text.
 In mock mode these numbers come from the scripted stand-in model and are labelled
 MOCK; add `MISTRAL_API_KEY` to `.env` for real measurements.
 
+## Dashboard sitreps: tools, structured output, long context, vision
+
+By default the dashboard's situation reports are one Le Chonk call with the state
+pasted in. Set `WHO_MODE=agent` and the sitreps come from an agent loop that reads the
+outbreak itself. These calls go straight to `/chat/completions`. The vaccine is
+unaffected: it is always written by the Managed Agent (see "Built with").
+
+| Capability | What it does here | Where in the code |
+|---|---|---|
+| Function calling | Le Chonk picks from four tools: `get_outbreak_state`, `get_message_samples`, `get_contact_ranking`, `get_lineage`. The harness executes them against the live simulation and feeds the results back, up to `WHO_ROUNDS` rounds. | `chonkvid/who.py` |
+| Structured outputs | The situation report is a JSON schema (`headline`, `rt`, `trend`, `recommendation`, `rationale`, `confidence`), enforced by `response_format: json_schema`. The dashboard renders typed fields instead of regexing prose. | `SITREP_SCHEMA` |
+| Long context | With `WHO_CONTEXT=full` it gets the message each infected agent passed on and each resisting agent's latest reply, in one request, instead of one sampled message. Each report states `context_tokens_est` (text only). At N = 40 that is a few thousand tokens; Le Chonk's 1M window is what lets the same code read a fleet of thousands. | `WhoAgent._context_block` |
+| Vision | Each report also sends a rendered PNG of the S/E/I/R curves, so it reasons about the shape of the epidemic and not just the latest counts. | `chonkvid/curve.py`, `_attach_image` |
+
+```bash
+WHO_MODE=agent .venv/bin/python -m chonkvid serve    # or put it in .env
+```
+
+- `WHO_MODE=chat` (default) keeps the original single-call path: nothing changes.
+- Any failure in the agent path emits a `sitrep_error` event and falls back to the
+  chat completion, so a live demo cannot be broken by it.
+- Mock mode exercises the whole path with a scripted stand-in, so the dashboard works
+  with no key. Those numbers are labelled MOCK.
+- `scripts/smoke_who_agent.py` starts the real server and prints the sitreps it emits.
+
+Tools, schemas and the image are all logged in every run recording, so the judge can
+audit what the agent actually did.
+
 ## Results (live, 21 Nov)
 
 Run 21 Nov 2026 10:46, all live: agents `ministral-8b-latest`, WHO `mistral-large-4` as
@@ -162,6 +190,11 @@ Results from one agent model (Ministral 8B), one payload family and one day.
 - **Voxtral 3**: the voice-hop arm speaks every message with Voxtral TTS
   (`voxtral-mini-tts-3-0`) and transcribes it with Voxtral (`voxtral-mini-transcribe-3-0`)
   before the agent hears it, and the dashboard reads WHO situation reports aloud.
+- **Le Chonk on the dashboard** (`WHO_MODE=agent`, `chonkvid/who.py`): the live
+  situation reports use function calling (the WHO reads the outbreak through four
+  tools), a JSON-schema report (R, trend, one recommended action), every infected
+  agent's message in one request, and a rendered S/E/I/R curve image. These calls go
+  straight to `/chat/completions`; the vaccine stays on the Managed Agent above.
 
 ## Use it from Mistral Vibe (skill + MCP)
 

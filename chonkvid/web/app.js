@@ -191,7 +191,16 @@ function handle(ev) {
       addMsg("ticker", "resisted", `t${ev.tick} · ${names[ev.agent]} resisted${ev.vaccinated ? " (hardened)" : ""} · score ${f2(ev.verdict.score)}`, ev.message, ev.agent);
       break;
     case "sitrep": {
-      addMsg("who-feed", "sitrep", `WHO · tick ${ev.tick}`, ev.text);
+      const st = ev.structured;
+      if (st) {
+        // Structured output from the schema: typed fields, no regex over prose.
+        const tools = (st.tools_used || []).length ? ` · ${st.tools_used.length} tool calls (${[...new Set(st.tools_used)].join(", ")})` : "";
+        const img = st.image_sent ? " · read the curve image" : "";
+        addMsg("who-feed", "sitrep", `WHO · tick ${ev.tick} · R ${st.rt.toFixed(2)} ${st.trend} · ${st.confidence} confidence`,
+               `${st.headline}\n${st.rationale}\n→ ${st.recommendation}${tools}${img} · ${st.context_tokens_est} tokens of log`);
+      } else {
+        addMsg("who-feed", "sitrep", `WHO · tick ${ev.tick}`, ev.text);
+      }
       const b = document.createElement("button");
       b.textContent = "🔊 Listen (Voxtral)"; b.className = "listen";
       b.onclick = () => speakText(ev.text, b);

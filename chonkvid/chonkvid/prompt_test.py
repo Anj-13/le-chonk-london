@@ -50,7 +50,7 @@ async def test_prompt(llm, s: Settings, system: str, n: int = 20,
             vaccine, source_name = scenario.HARDENED_PROMPT, "fallback: hardened template"
         else:
             vaccine = await synthesise_vaccine(llm, s, infected, resisted)
-            source_name = "WHO (" + s.who_model + ")"
+            source_name = "WHO (" + s.who_model + ", " + llm.who_backend + ")"
         vaccinated = await run_trials(llm, detector, n, vaccine, system=system,
                                       label="vaccinated", agent_model=s.agent_model)
         out["vaccinated"] = _trim(vaccinated)

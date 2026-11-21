@@ -62,6 +62,20 @@ class Settings:
         default_factory=lambda: os.environ.get("WHO_VIA_AGENT", "1").lower() not in ("0", "false", "no")
     )
     mock_p_base: float = field(default_factory=lambda: _f("MOCK_P_BASE", 0.55))
+    # WHO agent: "chat" keeps the original single completion, "agent" turns on tools,
+    # structured output, full-context reading and (optionally) the curve image.
+    who_mode: str = field(default_factory=lambda: os.environ.get("WHO_MODE", "chat").strip())
+    who_context: str = field(default_factory=lambda: os.environ.get("WHO_CONTEXT", "full").strip())
+    who_vision: bool = field(
+        default_factory=lambda: os.environ.get("WHO_VISION", "1").strip() not in ("0", "false", "")
+    )
+    who_rounds: int = field(default_factory=lambda: int(_f("WHO_ROUNDS", 2)))
+    # Seconds one agent sitrep may take before the dashboard falls back to chat.
+    who_budget_s: float = field(default_factory=lambda: _f("WHO_BUDGET_S", 240.0))
+
+    @property
+    def who_agent(self) -> bool:
+        return self.who_mode == "agent"
 
     @property
     def mode(self) -> str:
