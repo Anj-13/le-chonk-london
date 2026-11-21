@@ -7,14 +7,16 @@
 ## Pitch copy (paste-ready)
 - **Title:** ChonkVid
 - **Tagline:** Flatten the curve of prompt injection.
-- **One-liner:** We release a harmless self-spreading prompt into a population of
-  Ministral agents, measure how fast it spreads, and show that targeted vaccination
-  stops it, with a vaccine prompt written by Le Chonk.
+- **One-liner:** An R0 test for your agent's system prompt, on Mistral models: we
+  measure how fast a harmless self-spreading prompt moves through a population of
+  Ministral agents running *your* prompt, and verify a vaccine written by Le Chonk
+  with the same measurement.
 - **Problem:** Agents now read each other's output. One compromised agent can spread a
   payload across a fleet, and teams shipping fleets have no numbers for how fast or
   which defence works.
-- **What we measured:** per-contact spread probability (with CI), R0, attack rate under
-  no intervention vs random vs targeted vaccination at the same dose.
+- **What we measured:** per-contact spread probability for the user's own system
+  prompt (with CI), R0, attack rate under no intervention vs random vs targeted
+  vaccination at the same dose.
 - **Built with:** Ministral (population), mistral-embed (infection detection, variant
   lineages), Le Chonk (WHO agent and vaccine prompt), Mistral Vibe (build tool).
 - **Prior work:** extends Prompt Infection (Lee & Tiwari, 2024, arXiv 2410.07283), Morris II

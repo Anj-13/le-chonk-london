@@ -32,14 +32,16 @@ Rehearse during the 18:00–19:00 apéro: the app is already submitted by then, 
 live demo must run from the submitted version.
 
 ## 90-second demo arc
-1. (0–10s) "Agents are a population now, and populations get epidemics. This is a safe
-   sandbox." Numbers strip on screen.
-2. (10–25s) Infect patient zero live; network lights up.
-3. (25–45s) Curve rises; the WHO agent posts a situation report.
-4. (45–70s) Vaccinate: random 30% versus targeted 30%. Targeted bends the curve; show
-   the attack-rate difference.
-5. (70–90s) Final frame: the vaccine prompt diff and guidance table. "Public health
-   has a century of maths for this. We gave agent security the same playbook."
+1. (0–15s) "Agents are a population now, and populations get epidemics. This is a safe
+   sandbox, and it tests *your* prompt." Paste a real support-agent system prompt into
+   the first panel and show its measured spread per contact with the CI.
+2. (15–35s) Run the epidemic with that same prompt: infect patient zero live, network
+   lights up, curve rises, WHO posts a situation report.
+3. (35–60s) Vaccinate: random 30% versus targeted 30% on the same prompt's epidemic.
+   Targeted bends the curve; show the attack-rate difference.
+4. (60–90s) The WHO agent writes a vaccine for the pasted prompt and the same trials
+   re-measure it: the before/after numbers land, ending on the vaccine diff.
+   "An R0 test for your agent's system prompt, on Mistral models."
 
 ## Q&A prep (likely questions)
 - "Isn't this Agent Smith?" See tactic 3.

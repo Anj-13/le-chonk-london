@@ -40,7 +40,9 @@ beats random hardening at the same dose, ending on a Le Chonk-synthesised vaccin
   curves, conversation ticker); one-hop trial harness (spread probability with
   binomial CI, R0); vaccination = a hardened system prompt on chosen agents, compared
   at equal dose: random vs greedy targeted (degree / betweenness); numbers strip as a
-  first-class output.
+  first-class output; **bring-your-own-prompt mode: paste any system prompt, measure
+  its per-contact spread probability with a CI on the agent model, the WHO agent
+  writes a vaccine for exactly that prompt, and the same trials re-measure it.**
 - **Winning feature:** the WHO agent on Le Chonk: reads the epidemic log every K
   ticks, publishes situation reports, and synthesises the vaccine system-prompt patch
   from collected infection samples; its patch is then re-measured with one-hop trials.
