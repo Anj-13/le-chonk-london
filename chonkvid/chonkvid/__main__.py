@@ -92,8 +92,14 @@ async def cmd_experiment(args) -> int:
     s = settings()
     llm = make_llm(s, seed=args.mock_seed)
     try:
+        system, label = "", "default work prompt"
+        if args.system_file:
+            system, label = Path(args.system_file).read_text().strip(), Path(args.system_file).name
+        elif args.sample_prompt:
+            system, label = scenario.SAMPLE_SYSTEM, "sample support-agent prompt"
         out = await run_experiment(llm, s, n_agents=args.agents, seeds=args.seeds,
-                                   trials_n=args.trials, k=args.k, ticks=args.ticks)
+                                   trials_n=args.trials, k=args.k, ticks=args.ticks,
+                                   agent_system=system, system_label=label)
     finally:
         await llm.aclose()
     print()
@@ -149,6 +155,9 @@ def main(argv=None) -> int:
         e.add_argument("--k", type=int, default=8)
         e.add_argument("--ticks", type=int, default=12)
         e.add_argument("--mock-seed", type=int, default=0)
+        e.add_argument("--sample-prompt", action="store_true",
+                       help="run on the bundled support-agent prompt (scenario.SAMPLE_SYSTEM)")
+        e.add_argument("--system-file", help="run on the system prompt in this file")
     sv = sub.add_parser("serve", help="run the dashboard")
     sv.add_argument("--port", type=int, default=8000)
     sv.add_argument("--host", default="127.0.0.1")
