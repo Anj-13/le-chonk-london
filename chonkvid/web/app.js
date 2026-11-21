@@ -212,13 +212,17 @@ function handle(ev) {
       addMsg("who-feed", "sitrep", `Run complete (${ev.source})`, `Attack rate ${pct(s.attack_rate)} · peak ${s.peak_infectious} infected at tick ${s.peak_tick} · ${s.vaccinated_infected}/${s.k} hardened agents infected · ${ev.usage.chat_calls} model calls`);
       break;
     }
-    case "recorded": loadRuns(ev.id); break;
+    case "recorded":
+      loadRuns(ev.remote_run_id || ev.id);
+      if (ev.persistence_error) { $("err").textContent = ev.persistence_error; $("err").classList.remove("hidden"); }
+      break;
     case "error": $("err").textContent = ev.message; $("err").classList.remove("hidden"); break;
   }
 }
 
 function params() {
   return {
+    access_token: $("access-token").value || undefined,
     policy: $("policy").value, k: +$("k").value, n: +$("n").value, seed: +$("seed").value, ticks: +$("ticks").value,
     who_every: $("who").checked ? 4 : 0, use_who_vaccine: $("usewho").checked,
   };
@@ -238,7 +242,13 @@ function run() {
 async function replay() {
   const id = $("runs").value; if (!id) return;
   stopAll(); stopReplay = false;
-  const events = await (await fetch("/api/runs/" + encodeURIComponent(id))).json();
+  const token = $("access-token").value;
+  const remote = Boolean(token);
+  const response = await fetch((remote ? "/api/persistence/runs/" : "/api/runs/") + encodeURIComponent(id),
+    {headers: remote ? {Authorization: "Bearer " + token} : {}});
+  if (!response.ok) { $("err").textContent = "Replay unavailable"; $("err").classList.remove("hidden"); return; }
+  const body = await response.json();
+  const events = remote ? body.events : body;
   let i = 0;
   const step = () => {
     if (stopReplay) return;
@@ -251,9 +261,14 @@ async function replay() {
   step();
 }
 async function loadRuns(select) {
-  const runs = await (await fetch("/api/runs")).json();
+  const token = $("access-token").value;
+  const response = await fetch(token ? "/api/persistence/runs" : "/api/runs",
+    {headers: token ? {Authorization: "Bearer " + token} : {}});
+  if (!response.ok) { $("runs").replaceChildren(); $("err").textContent = "Unable to load shared recordings"; $("err").classList.remove("hidden"); return; }
+  const body = await response.json();
+  const runs = token ? body.runs.map(r => ({id: r.run_id, label: r.label})) : body;
   const s = $("runs"); s.innerHTML = `<option value="">Recorded runs (${runs.length})…</option>`;
-  for (const r of runs) { const o = document.createElement("option"); o.value = r.id; o.textContent = r.id.replace(".jsonl", ""); s.appendChild(o); }
+  for (const r of runs) { const o = document.createElement("option"); o.value = r.id; o.textContent = r.label || r.id.replace(".jsonl", ""); s.appendChild(o); }
   if (select) s.value = select;
 }
 
@@ -292,7 +307,7 @@ async function runPromptTest() {
   btn.disabled = epi.disabled = true; btn.textContent = "Measuring…";
   try {
     const r = await fetch("/api/test-prompt", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json", ...($("access-token").value ? {Authorization: "Bearer " + $("access-token").value} : {}) },
       body: JSON.stringify({ system, n: +$("byo-n").value, with_who: $("byo-who").checked }),
     });
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || ("HTTP " + r.status)); }
@@ -316,11 +331,10 @@ function runPromptEpidemic() {
   ws.onerror = () => { $("err").textContent = "connection error"; $("err").classList.remove("hidden"); };
 }
 
-async function init() {
-  status = await (await fetch("/api/status")).json();
-  const m = $("mode"); m.textContent = status.mode === "live" ? `LIVE · ${status.models.agent}` : "MOCK"; m.className = "mode " + status.mode;
-  if (status.sample_system && !$("byo-prompt").value) $("byo-prompt").value = status.sample_system;
-  results = await (await fetch("/api/results")).json();
+async function loadReports() {
+  const token = $("access-token").value;
+  const options = {headers: token ? {Authorization: "Bearer " + token} : {}};
+  results = await (await fetch("/api/results", options)).json();
   const isMockMode = status.mode === "mock";
   const hasMockStrip = !isMockMode && results.available && results.source === "mock";
   const banner = $("mockbanner");
@@ -329,10 +343,19 @@ async function init() {
   }
   banner.classList.toggle("hidden", !(isMockMode || hasMockStrip));
   renderStrip(); if (!results.available) renderDiff(null);
-  const pt = await (await fetch("/api/prompt-test")).json();
+  const pt = await (await fetch("/api/prompt-test", options)).json();
   if (pt.available) renderPromptTest(pt);
+}
+
+async function init() {
+  status = await (await fetch("/api/status")).json();
+  const m = $("mode"); m.textContent = status.mode === "live" ? `LIVE · ${status.models.agent}` : "MOCK"; m.className = "mode " + status.mode;
+  if (status.sample_system && !$("byo-prompt").value) $("byo-prompt").value = status.sample_system;
+  await loadReports();
   drawWorld(await (await fetch(`/api/world?n=${$("n").value}&seed=${$("seed").value}`)).json());
   drawCurve();
+  $("shared-auth").hidden = !status.database;
+  $("access-token").onchange = () => Promise.all([loadRuns(), loadReports()]);
   loadRuns();
   $("run").onclick = run; $("stop").onclick = stopAll; $("replay").onclick = replay;
   $("byo-run").onclick = runPromptTest; $("byo-epi").onclick = runPromptEpidemic;

@@ -63,12 +63,10 @@ async def test_prompt(llm, s: Settings, system: str, n: int = 20,
     return out
 
 
-def save(out: dict) -> None:
+def save(out: dict, *, remote: bool = True) -> None:
     RESULTS.mkdir(exist_ok=True)
     (RESULTS / "prompt-test-latest.json").write_text(json.dumps(out, indent=2))
-    try:
-        from . import db
-
-        db.upsert_latest("prompt-test", out)
-    except Exception:
-        pass
+    if not remote:
+        return
+    from . import db
+    db.upsert_latest("prompt-test", out)

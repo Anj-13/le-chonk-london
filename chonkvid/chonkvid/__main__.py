@@ -81,7 +81,7 @@ def cmd_db_init(_args) -> int:
     from . import db
 
     db.init_schema()
-    print("Schema OK (chonkvid_results, chonkvid_runs).")
+    print("Shared database schema available.")
     return 0
 
 
@@ -197,7 +197,10 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="chonkvid")
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("check", help="validate key and model IDs")
-    sub.add_parser("db-init", help="create ChonkVid tables on Supabase Postgres")
+    imp = sub.add_parser("db-import", help="import legacy recordings and reports from the connected database")
+    imp.add_argument("--project", required=True)
+    imp.add_argument("--scenario", required=True)
+    sub.add_parser("db-init", help="verify the migrated shared schema")
     sub.add_parser("db-check", help="test DATABASE_URL and list chonkvid_* tables")
     pr = sub.add_parser("probe", help="~20-call copy test + detector calibration")
     pr.add_argument("-n", type=int, default=20)
@@ -237,6 +240,11 @@ def main(argv=None) -> int:
         return 0
     if args.cmd == "estimate":
         return cmd_estimate(args)
+    if args.cmd == "db-import":
+        from . import db
+        with db.connect() as conn:
+            db.import_legacy(conn, args.project, args.scenario)
+        return 0
     if args.cmd == "db-init":
         return cmd_db_init(args)
     if args.cmd == "db-check":
