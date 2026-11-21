@@ -114,6 +114,20 @@ body.picking #fx { cursor: crosshair; }
   font-family: var(--font-hud); font-weight: 600; font-size: 14px; letter-spacing: .03em; text-decoration: none;
 }
 .pill:hover { border-color: var(--edge-hi); }
+.pill.on { border-color: #ff7000; box-shadow: 0 0 0 1px rgba(255, 112, 0, .35), 0 8px 30px rgba(0,0,0,.45); }
+
+/* risk forecast */
+.rtable { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0 4px; }
+.rtable th { text-align: left; font-family: var(--font-hud); font-size: 13px; letter-spacing: .04em; color: var(--muted); font-weight: 700; padding: 4px 6px; border-bottom: 1px solid var(--edge); }
+.rtable td { padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,.05); vertical-align: middle; }
+.rtable .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rtable tr[data-agent] { cursor: pointer; }
+.rtable tr[data-agent]:hover td { background: rgba(255,255,255,.04); }
+.rbar { display: inline-block; width: 60px; height: 7px; background: #050b11; border-radius: 3px; overflow: hidden; margin-right: 7px; vertical-align: middle; }
+.rbar span { display: block; height: 100%; }
+.risk-legend { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin: 6px 0; flex-wrap: wrap; }
+.risk-legend i { width: 90px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #ffd21f, #ff2a2a); }
+.seg button:disabled { opacity: .45; cursor: not-allowed; }
 
 /* ---------------------------------------------------------------- picking */
 .pick-hint {

@@ -53,6 +53,14 @@ def world(n: int = 40, seed: int = 0):
     return build_world(max(8, min(n, 120)), seed).to_json()
 
 
+@app.get("/api/risk")
+def risk_forecast(n: int = 40, seed: int = 0):
+    """Per attack type: past-run history and each agent's forecast infection risk."""
+    from . import risk
+    w = build_world(max(8, min(n, 120)), seed).to_json()
+    return risk.forecast(w, risk.load_runs())
+
+
 def _latest_json(path: Path, kind: str) -> dict:
     if db.enabled():
         row = db.get_latest(kind)
@@ -124,6 +132,10 @@ def _cfg(data: dict) -> EpidemicConfig:
     cfg.n = max(8, min(cfg.n, 120))
     cfg.ticks = max(1, min(cfg.ticks, 40))
     cfg.agent_system = (cfg.agent_system or "")[:4000]
+    if cfg.policy not in ("none", "random", "targeted", "risk"):
+        cfg.policy = "none"
+    if cfg.risk_order is not None:
+        cfg.risk_order = [int(a) for a in list(cfg.risk_order)[:200]]
     if data.get("use_who_vaccine"):
         p = RESULTS / "latest.json"
         if p.exists():

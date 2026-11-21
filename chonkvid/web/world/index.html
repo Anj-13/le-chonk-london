@@ -43,6 +43,7 @@
 
 <nav class="side-btns">
   <button class="pill" id="open-intel" title="Charts, cases, briefings and setup">📊 Intel</button>
+  <button class="pill on" id="risk-toggle" title="Show who is most likely to be hit, from past runs of this attack">🎯 Risk forecast</button>
   <button class="pill" id="zoom-reset" title="Reset map zoom">⤢ Fit map</button>
   <a class="pill" href="/" title="The original numbers dashboard">🧪 Lab view</a>
 </nav>
@@ -85,6 +86,7 @@
   <div class="drawer-h">
     <div class="tabs" role="tablist">
       <button role="tab" class="tab on" data-tab="curve">Curve</button>
+      <button role="tab" class="tab" data-tab="risk">Risk</button>
       <button role="tab" class="tab" data-tab="cases">Cases</button>
       <button role="tab" class="tab" data-tab="brief">Briefings</button>
       <button role="tab" class="tab" data-tab="setup">Setup</button>
@@ -105,6 +107,8 @@
       <ul class="defs" id="defs"></ul>
     </div>
   </div>
+
+  <div class="tabpane" data-pane="risk" id="risk-pane"></div>
 
   <div class="tabpane" data-pane="cases">
     <div class="pane-note" id="case-filter">Every infection and every resisted exposure, newest first. Click an agent on the map to filter.</div>
@@ -162,6 +166,8 @@
             <b>Random vaccination</b><small>Harden k random agents</small></button>
           <button role="radio" data-policy="targeted" aria-checked="false">
             <b>Targeted vaccination</b><small>Harden the k busiest agents</small></button>
+          <button role="radio" data-policy="risk" aria-checked="false">
+            <b>Risk-based vaccination</b><small>Harden the k most at risk, from past runs</small></button>
         </div>
         <label class="dose">Vaccine doses (k): <b id="k-val">8</b>
           <input id="k" type="range" min="0" max="40" value="8">

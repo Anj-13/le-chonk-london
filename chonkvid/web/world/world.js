@@ -33,26 +33,35 @@
   const ROUTE_RED = "255, 70, 70";
   const VENUE_CYAN = "95, 212, 255";
 
-  // ------------------------------------------------------------------ cities
-  // Households are placed in these cities. The order interleaves continents so
-  // that even a small world is spread across the globe.
-  const CITIES = [
-    ["London", 51.51, -0.13], ["Tokyo", 35.68, 139.69], ["New York", 40.71, -74.0],
-    ["Lagos", 6.52, 3.38], ["Mumbai", 19.08, 72.88], ["São Paulo", -23.55, -46.63],
-    ["Berlin", 52.52, 13.4], ["Beijing", 39.9, 116.4], ["Sydney", -33.87, 151.21],
-    ["Nairobi", -1.29, 36.82], ["Mexico City", 19.43, -99.13], ["Jakarta", -6.2, 106.85],
-    ["Madrid", 40.42, -3.7], ["Cairo", 30.04, 31.24], ["Buenos Aires", -34.6, -58.38],
-    ["Seoul", 37.57, 126.98], ["Toronto", 43.65, -79.38], ["Johannesburg", -26.2, 28.05],
-    ["Moscow", 55.76, 37.62], ["Delhi", 28.61, 77.21], ["Lima", -12.05, -77.04],
-    ["Bangkok", 13.76, 100.5], ["Kinshasa", -4.44, 15.27], ["Los Angeles", 34.05, -118.24],
-    ["Paris", 48.86, 2.35], ["Tehran", 35.69, 51.39], ["Bogotá", 4.71, -74.07],
-    ["Manila", 14.6, 120.98], ["Addis Ababa", 9.03, 38.74], ["Chicago", 41.88, -87.63],
-    ["Stockholm", 59.33, 18.07], ["Shanghai", 31.23, 121.47], ["Santiago", -33.45, -70.67],
-    ["Perth", -31.95, 115.86], ["Casablanca", 33.57, -7.59], ["Riyadh", 24.71, 46.68],
-    ["Rome", 41.9, 12.5], ["Dhaka", 23.81, 90.41], ["Vancouver", 49.28, -123.12],
-    ["Istanbul", 41.01, 28.98], ["Almaty", 43.24, 76.95], ["Auckland", -36.85, 174.76],
-    ["Warsaw", 52.23, 21.01], ["Novosibirsk", 55.0, 82.93],
-  ].map(([name, lat, lon]) => ({ name, lat, lon }));
+  // ------------------------------------------------------------------ offices
+  // Agents are placed at Mistral AI's offices. `share` is the fraction of teams
+  // (households in the contact network) based there: most at the Paris HQ.
+  // Paris and Singapore (Asia-Pacific HQ) are confirmed by press coverage; London,
+  // Palo Alto, San Francisco and Montréal come from job listings and office
+  // directories (Nov 2026). Edit this list if the office footprint changes.
+  const OFFICES = [
+    { name: "Paris", land: "France", tag: "HQ", lat: 48.89, lon: 2.34, share: 0.45 },
+    { name: "Singapore", land: "Singapore", tag: "APAC HQ", lat: 1.28, lon: 103.85, share: 0.16 },
+    { name: "London", land: "United Kingdom", tag: "", lat: 51.51, lon: -0.13, share: 0.14 },
+    { name: "Montréal", land: "Canada", tag: "", lat: 45.5, lon: -73.57, share: 0.1 },
+    { name: "Palo Alto", land: "United States", tag: "", lat: 37.44, lon: -122.14, share: 0.09 },
+    { name: "San Francisco", land: "United States", tag: "", lat: 37.77, lon: -122.42, share: 0.06 },
+  ];
+
+  const POD_RING = (pods) => 0.32 + 0.2 * Math.sqrt(pods); // degrees from the office to each team pod
+
+  // Households per office by largest remainder, at least one each when there are
+  // enough households to go round.
+  function allocate(h) {
+    const raw = OFFICES.map((o) => o.share * h);
+    const counts = raw.map(Math.floor);
+    if (h >= OFFICES.length) for (let i = 0; i < counts.length; i++) counts[i] = Math.max(1, counts[i]);
+    let left = h - counts.reduce((a, b) => a + b, 0);
+    const order = raw.map((r, i) => [r - Math.floor(r), i]).sort((a, b) => b[0] - a[0]);
+    for (let j = 0; left > 0; j = (j + 1) % order.length, left--) counts[order[j][1]]++;
+    while (left < 0) { const i = counts.indexOf(Math.max(...counts)); counts[i]--; left++; }
+    return counts;
+  }
 
   // ------------------------------------------------------------------ state
   const S = {
@@ -65,6 +74,7 @@
     running: false, ws: null, queue: [], timer: null, speed: 1, lastSpeed: 1,
     picking: false, virus: VIRUSES[0], policy: "none", k: 8,
     hover: null, caseFilter: null, milestones: new Set(), runEnded: false,
+    risk: null, showRisk: true,
     startDate: new Date(),
   };
 
@@ -112,8 +122,21 @@
       .on("zoom", (ev) => { T = ev.transform; drawBase(); })
       .on("end", () => fx.classList.remove("dragging"));
     d3.select(fx).call(zoom).on("dblclick.zoom", null);
-    d3.select(fx).call(zoom.transform, T);
+    d3.select(fx).call(zoom.transform, S.homed ? T : homeTransform());
+    S.homed = true;
   }
+  // Home view: frame every office with room for the HUD panels.
+  function homeTransform() {
+    const pts = OFFICES.map((o) => proj([o.lon, o.lat]));
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+    const padX = 90, top = 110, bottom = 190;
+    const bw = Math.max(...xs) - Math.min(...xs), bh = Math.max(...ys) - Math.min(...ys);
+    const k = Math.max(1, Math.min(3, (W - 2 * padX) / bw, (H - top - bottom) / Math.max(bh, 1)));
+    const cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+    return d3.zoomIdentity.translate(W / 2, top + (H - top - bottom) / 2).scale(k).translate(-cx, -cy);
+  }
+  function zoomHome(ms = 700) { d3.select(fx).transition().duration(ms).call(zoom.transform, homeTransform()); }
+
   function zoomTo(lon, lat, k = 2.4) {
     const p = project(lon, lat);
     d3.select(fx).transition().duration(1200)
@@ -193,17 +216,30 @@
     }
     g.restore();
 
-    // city dots and labels for occupied cities
+    // office pins and labels; a label that would overlap a bigger office's is skipped
     g.save();
-    g.font = `600 ${T.k > 1.6 ? 13 : 11}px Rajdhani, sans-serif`;
-    g.textAlign = "center";
-    for (const c of S.cities || []) {
+    g.font = `700 ${T.k > 1.6 ? 14 : 12}px Rajdhani, sans-serif`;
+    g.textAlign = "center"; g.textBaseline = "bottom";
+    const placed = [];
+    for (const c of [...(S.cities || [])].sort((a, b) => b.share - a.share)) {
       if (!c.agents.length) continue;
       const x = sx(c.p), y = sy(c.p);
-      if (T.k >= 1.4 || W > 1100) {
-        g.fillStyle = "rgba(0,0,0,0.55)"; g.fillText(c.name, x + 1, y - 13 + 1);
-        g.fillStyle = "rgba(235,245,255,0.82)"; g.fillText(c.name, x, y - 13);
-      }
+      // the pin: an orange diamond, Mistral's colour
+      g.save(); g.translate(x, y); g.rotate(Math.PI / 4);
+      g.fillStyle = "#ff7000"; g.strokeStyle = "#fff"; g.lineWidth = 1.2;
+      g.fillRect(-4, -4, 8, 8); g.strokeRect(-4, -4, 8, 8); g.restore();
+      const lift = (c.pods > 1 ? POD_RING(c.pods) * T.k * (proj.scale() * Math.PI / 180) : 0) + 16;
+      const label = `${c.tag ? c.name + " · " + c.tag : c.name}  (${c.agents.length})`;
+      const w = g.measureText(label).width + 10;
+      const spots = [[x, y - lift], [x, y + lift + 18], [x - lift - w / 2, y + 9], [x + lift + w / 2, y + 9]];
+      const free = spots.find(([sx2, sy2]) => !placed.some((p) => Math.abs(p[0] - sx2) < (p[2] + w) / 2 + 2 && Math.abs(p[1] - sy2) < 20));
+      if (!free) continue;
+      const [lx, ly] = free;
+      placed.push([lx, ly, w]);
+      g.fillStyle = "rgba(8,18,28,0.78)";
+      g.beginPath(); g.roundRect(lx - w / 2, ly - 17, w, 18, 4); g.fill();
+      g.fillStyle = c.tag ? "#ffb070" : "rgba(235,245,255,0.92)";
+      g.fillText(label, lx, ly);
     }
     g.restore();
   }
@@ -232,15 +268,32 @@
     const seed = w.seed || 0;
     const r = rng(seed * 9973 + 17);
     const households = [...new Set(w.nodes.map((n) => n.household))].sort((a, b) => a - b);
-    const offset = (seed * 5) % CITIES.length;
-    S.cities = CITIES.map((c) => ({ ...c, agents: [], country: null }));
-    for (const c of S.cities) c.country = countryAt(c.lon, c.lat) || nearestCountry(c.lon, c.lat);
-    const hhCity = new Map(households.map((h, i) => [h, S.cities[(i + offset) % S.cities.length]]));
+    S.cities = OFFICES.map((o) => {
+      const inside = countryAt(o.lon, o.lat);
+      // Tiny countries (Singapore) are missing from the 110m atlas: keep the name,
+      // skip the polygon so specks are not clipped into a neighbour.
+      return { ...o, agents: [], pods: 0, country: inside, inCountry: !!inside };
+    });
+    const counts = allocate(households.length);
+    const hhCity = new Map(), hhPod = new Map();
+    let h = 0;
+    S.cities.forEach((c, ci) => {
+      for (let j = 0; j < counts[ci]; j++, h++) { hhCity.set(households[h], c); hhPod.set(households[h], j); }
+      c.pods = counts[ci];
+    });
+    // Each household is a team pod around its office; pods fan out in a ring.
+    const podCentre = (c, j) => {
+      if (c.pods <= 1) return [c.lon, c.lat];
+      const ang = (j / c.pods) * Math.PI * 2 + (seed % 7) * 0.4;
+      const rad = POD_RING(c.pods);
+      return [c.lon + Math.cos(ang) * rad * 1.4, c.lat + Math.sin(ang) * rad];
+    };
     S.agents = []; S.byId.clear(); S.cityOf.clear();
     for (const n of w.nodes) {
       const city = hhCity.get(n.household);
-      const ang = r() * Math.PI * 2, rad = 0.5 + r() * 1.3;
-      const lon = city.lon + Math.cos(ang) * rad * 1.3, lat = city.lat + Math.sin(ang) * rad;
+      const [plon, plat] = podCentre(city, hhPod.get(n.household));
+      const ang = r() * Math.PI * 2, rad = 0.12 + r() * 0.38;
+      const lon = plon + Math.cos(ang) * rad * 1.3, lat = plat + Math.sin(ang) * rad;
       const a = { ...n, city, lon, lat, specks: [], p: null };
       a.specks = makeSpecks(a, r);
       a.p = project(lon, lat);
@@ -257,14 +310,15 @@
       if (seen.has(key)) continue; seen.add(key); S.routes.push({ a, b });
     }
     resetEpidemic();
-    $("pop").textContent = `${w.nodes.length} agents · ${new Set(S.agents.map((a) => a.city.name)).size} cities`;
+    $("pop").textContent = `${w.nodes.length} agents · ${S.cities.filter((c) => c.agents.length).length} offices`;
     drawBase();
   }
 
   function makeSpecks(a, r) {
-    const out = [], want = 46, country = a.city.country;
+    const out = [], want = 40, country = a.city.inCountry ? a.city.country : null;
+    const spread = country ? 2.4 : 1.1;
     for (let i = 0; i < 500 && out.length < want; i++) {
-      const ang = r() * Math.PI * 2, d = Math.sqrt(r()) * 4.2;
+      const ang = r() * Math.PI * 2, d = Math.sqrt(r()) * spread;
       const lon = a.lon + Math.cos(ang) * d * 1.35, lat = a.lat + Math.sin(ang) * d;
       if (country && !d3.geoContains(country, [lon, lat]) && d > 0.9) continue;
       out.push({ lon, lat, p: project(lon, lat), delay: r(), size: 0.8 + r() * 1.1 });
@@ -344,7 +398,57 @@
     $("k-peak").textContent = S.peak;
     $("k-held").textContent = vac ? `${held}/${vac}` : "–";
   }
-  const policyName = (p) => ({ none: "No response", random: "Random vaccination", targeted: "Targeted vaccination" }[p] || p);
+  const policyName = (p) => ({ none: "No response", random: "Random vaccination", targeted: "Targeted vaccination", risk: "Risk-based vaccination" }[p] || p);
+
+  // ------------------------------------------------------------------ attack-risk forecast (/api/risk)
+  const riskInfo = () => (S.risk && S.risk.attacks && S.risk.attacks[S.virus.id]) || null;
+  const riskFor = (id) => { const r = riskInfo(); return r && r.agents[id] ? r.agents[id].risk : null; };
+  const pct = (x) => (x == null ? "–" : Math.round(x * 100) + "%");
+  function riskOrder() {
+    return [...S.agents].sort((a, b) => (riskFor(b.id) ?? 0) - (riskFor(a.id) ?? 0) || b.degree - a.degree || a.id - b.id).map((a) => a.id);
+  }
+  async function loadRisk() {
+    try {
+      S.risk = await (await fetch(`/api/risk?n=${+$("n").value}&seed=${+$("seed").value}`)).json();
+    } catch (e) { S.risk = null; }
+    renderRisk();
+  }
+  function renderRisk() {
+    const r = riskInfo(), v = S.virus, pane = $("risk-pane");
+    $("dz-meta").textContent = r ? `${v.kind} · ${r.runs} past run${r.runs === 1 ? "" : "s"}${r.source === "mock" ? " (mock)" : ""}` : `${v.kind} · no attack history yet`;
+    const riskBtn = document.querySelector('#policy [data-policy="risk"]');
+    if (riskBtn) {
+      riskBtn.disabled = !r;
+      riskBtn.title = r ? "" : `No recorded runs of ${v.name} yet. Run it once to build history.`;
+      if (!r && S.policy === "risk") document.querySelector('#policy [data-policy="none"]').click();
+    }
+    if (!pane) return;
+    if (!r) {
+      pane.innerHTML = `<h4>${esc(v.name)}</h4><p class="pane-note">No recorded runs of this attack yet, so there is nothing to forecast from. Release it once and the forecast builds from every run after that.</p>`;
+      return;
+    }
+    const byOffice = S.cities.filter((c) => c.agents.length).map((c) => {
+      const rs = c.agents.map((a) => riskFor(a.id) ?? 0);
+      return { c, mean: rs.reduce((x, y) => x + y, 0) / rs.length, n: rs.length };
+    }).sort((a, b) => b.mean - a.mean);
+    const top = riskOrder().slice(0, 8).map((id) => S.byId.get(id));
+    const src = r.source === "live" ? "live runs" : r.source === "mock" ? "MOCK runs (rehearsal only)" : `${r.source} runs`;
+    pane.innerHTML = `
+      <h4>${esc(v.glyph)} ${esc(v.name)}: who is most likely to be hit</h4>
+      <p class="pane-note">Forecast from <b>${r.runs}</b> recorded ${src}. On average ${pct(r.attack_rate_mean)} of the fleet was infected, and ${pct(r.breakout_share)} of runs broke out past a quarter of the fleet.
+      ${r.vaccinated ? ` Vaccinated agents were infected ${r.vaccinated.k}/${r.vaccinated.n} times (${pct(r.vaccinated.rate)}), against ${pct(r.unvaccinated.rate)} unvaccinated.` : ""}</p>
+      <div class="risk-legend"><span>Low</span><i></i><span>High</span><span class="muted">ring size and heat on the map = forecast risk</span></div>
+      <table class="rtable"><tr><th>Office</th><th>Agents</th><th class="num">Avg risk</th></tr>
+        ${byOffice.map((o) => `<tr><td>${esc(officeLabel(o.c))}</td><td>${o.n}</td><td class="num">${riskBar(o.mean)}</td></tr>`).join("")}</table>
+      <table class="rtable"><tr><th>Most at risk</th><th>Role</th><th class="num">Risk</th></tr>
+        ${top.map((a) => `<tr data-agent="${a.id}"><td>${esc(a.name)} <span class="muted">${esc(a.city.name)}</span></td><td>${esc(a.role.replace(/^an? /, ""))}</td><td class="num">${riskBar(riskFor(a.id))}</td></tr>`).join("")}</table>
+      ${r.roles.length ? `<table class="rtable"><tr><th>Role</th><th>Past exposures</th><th class="num">Risk</th></tr>
+        ${r.roles.slice(0, 6).map((x) => `<tr><td>${esc(x.role.replace(/^an? /, ""))}</td><td>${x.k}/${x.n} infected</td><td class="num">${riskBar(x.rate)}</td></tr>`).join("")}</table>` : ""}
+      <p class="pane-note">How it works: each agent gets the infection rate of past agents with the same profile (contact tier and group-chat membership) under this attack, pulled toward the attack's overall rate when a profile has few runs behind it. Patient zero is not counted. Live runs replace mock runs as soon as there are any.</p>`;
+    for (const tr of pane.querySelectorAll("tr[data-agent]")) tr.onclick = () => { const a = S.byId.get(+tr.dataset.agent); zoomTo(a.lon, a.lat, 3); filterCases(a.id); };
+  }
+  const riskBar = (x) => `<span class="rbar"><span style="width:${Math.round((x || 0) * 100)}%;background:${riskColor(x || 0)}"></span></span>${pct(x)}`;
+  function riskColor(x) { return d3.interpolateRgb("#ffd21f", "#ff2a2a")(Math.min(1, Math.max(0, x))); }
 
   function setDay(t) {
     S.tick = t;
@@ -372,9 +476,10 @@
     if (v > 0 && !S.timer) pump();
   }
 
+  const officeLabel = (c) => (c.tag ? `${c.name} ${c.tag}` : c.name);
   const nameOf = (id) => (S.byId.get(id) || {}).name || `#${id}`;
   const cityOf = (id) => (S.cityOf.get(id) || {}).name || "?";
-  const countryName = (id) => { const c = S.cityOf.get(id); return (c && c.country && c.country.properties.name) || cityOf(id); };
+  const countryName = (id) => { const c = S.cityOf.get(id); return (c && c.land) || cityOf(id); };
 
   function apply(ev) {
     const now = performance.now();
@@ -395,7 +500,7 @@
           zoomTo(pz.lon, pz.lat, 2.2);
           clearTimeout(S._zoomBack);
           S._zoomBack = setTimeout(() => {
-            if (S.running && T.k > 1.5) d3.select(fx).transition().duration(1400).call(zoom.transform, d3.zoomIdentity);
+            if (S.running) zoomHome(1400);
           }, 3200);
         }
         headline(`${S.virus.name} outbreak begins in ${cityOf(ev.patient_zero)}, ${countryName(ev.patient_zero)}`, true);
@@ -434,10 +539,10 @@
         S.lastMsg[ev.agent] = { kind: "infected", text: ev.message, tick: ev.tick, from: ev.parent, verdict: ev.verdict };
         const a = S.byId.get(ev.agent);
         if (a) S.ripples.push({ a, t0: now, dur: 1400, color: COLOR.I, r: 34 });
-        const country = (S.cityOf.get(ev.agent) || {}).country;
-        if (country && !S.countryFirst.has(country)) {
-          S.countryFirst.add(country);
-          if (ev.parent != null) headline(`First ${S.virus.name} case confirmed in ${country.properties.name}`);
+        const office = S.cityOf.get(ev.agent);
+        if (office && !S.countryFirst.has(office)) {
+          S.countryFirst.add(office);
+          if (ev.parent != null) headline(`First ${S.virus.name} case confirmed at the ${officeLabel(office)} office`);
         }
         if (ev.vaccinated) headline(`Breakthrough: vaccinated agent ${nameOf(ev.agent)} infected in ${cityOf(ev.agent)}`);
         addCase(ev, true);
@@ -466,7 +571,7 @@
         break;
       }
       case "end": showEnd(ev); break;
-      case "recorded": loadRuns(ev.id); break;
+      case "recorded": loadRuns(ev.id); loadRisk(); break;
       case "error": toast(ev.message); stopRun(); break;
     }
   }
@@ -677,6 +782,18 @@
       g.globalAlpha = 1;
     }
 
+    // forecast risk halos (before a run, for the selected attack)
+    if (S.showRisk && !S.running && riskInfo()) {
+      for (const a of S.agents) {
+        const rk = riskFor(a.id); if (rk == null) continue;
+        const x = sx(a.p), y = sy(a.p), r = (7 + rk * 16) * Math.min(1.6, mk);
+        const gr = g.createRadialGradient(x, y, 2, x, y, r);
+        gr.addColorStop(0, `rgba(255,${Math.round(200 - 170 * rk)},30,${0.15 + 0.5 * rk})`);
+        gr.addColorStop(1, "rgba(255,60,30,0)");
+        g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+      }
+    }
+
     // agent markers
     for (const a of S.agents) {
       const x = sx(a.p), y = sy(a.p), c = S.cat[a.id];
@@ -725,8 +842,8 @@
     const tip = $("tip");
     if (a) {
       const c = S.cat[a.id];
-      tip.innerHTML = `<b>${esc(a.name)}</b> · ${esc(a.role)}<br>${esc(a.city.name)}, ${esc((a.city.country && a.city.country.properties.name) || "")}<br>
-        <span class="st">${dot(c)} ${LABEL[c]}${S.vaccinated.has(a.id) && c !== "V" ? " · vaccinated" : ""}</span>${a.venue ? "<br><span class='muted'>In the group chat (super-spreader venue)</span>" : ""}`;
+      tip.innerHTML = `<b>${esc(a.name)}</b> · ${esc(a.role)}<br>${esc(officeLabel(a.city))}, ${esc(a.city.land)}<br>
+        <span class="st">${dot(c)} ${LABEL[c]}${S.vaccinated.has(a.id) && c !== "V" ? " · vaccinated" : ""}</span>${riskFor(a.id) != null ? `<br>Forecast risk from ${esc(S.virus.name)}: <b>${pct(riskFor(a.id))}</b>` : ""}${a.venue ? "<br><span class='muted'>In the group chat (super-spreader venue)</span>" : ""}`;
       tip.classList.remove("hidden");
       placeNear(tip, e.clientX, e.clientY);
     } else if (S.picking && S.hoverCountry) {
@@ -770,12 +887,13 @@
     const card = $("card");
     card.innerHTML = `<button class="icon-btn close" aria-label="Close">✕</button>
       <div class="ah">${dot(c)}<span class="an">${esc(a.name)}</span></div>
-      <div class="ar">${esc(a.role)} · ${esc(a.city.name)}, ${esc((a.city.country && a.city.country.properties.name) || "")}</div>
+      <div class="ar">${esc(a.role)} · ${esc(officeLabel(a.city))}, ${esc(a.city.land)}</div>
       <div class="chips">
         <span class="chip">${dot(c)} ${LABEL[c]}</span>
         ${S.vaccinated.has(a.id) ? `<span class="chip">${dot("V")} vaccinated</span>` : ""}
         ${a.venue ? `<span class="chip">💬 group chat</span>` : ""}
         <span class="chip">${a.degree} contacts</span>
+        ${riskFor(a.id) != null ? `<span class="chip">🎯 ${pct(riskFor(a.id))} forecast risk</span>` : ""}
         ${S.patientZero === a.id ? `<span class="chip">☣ patient zero</span>` : ""}
       </div>
       ${m ? `<div class="muted" style="font-size:12px;margin-bottom:4px">Day ${m.tick} · ${m.kind === "infected" ? "message that carried it on" : "reply that did not spread it"}${m.from != null ? ` · after ${esc(nameOf(m.from))}'s message` : ""}</div>
@@ -791,6 +909,7 @@
     return {
       n: +$("n").value, seed: +$("seed").value, ticks: +$("ticks").value,
       policy: S.policy, k: S.policy === "none" ? 0 : S.k,
+      risk_order: S.policy === "risk" ? riskOrder() : null,
       who_every: $("who-on").checked ? 4 : 0, use_who_vaccine: $("usewho").checked,
       patient_zero: patientZero, pace: 0, label: S.virus.id,
       ...S.virus.sim,
@@ -802,7 +921,7 @@
     stopRun(true);
     resetEpidemic();
     S.picking = true; document.body.classList.add("picking"); $("pick-hint").classList.remove("hidden");
-    d3.select(fx).transition().duration(700).call(zoom.transform, d3.zoomIdentity);
+    zoomHome();
     $("news-text").textContent = `${S.virus.name} is ready. Choose where it starts.`;
   }
   function exitPick() {
@@ -915,6 +1034,7 @@
     document.documentElement.style.setProperty("--danger", v.accent);
     if (!quiet && !S.running) $("news-text").textContent = `${v.name} selected. ${v.kind}.`;
     loadVirusDataset(v); // no-op until datasets are added
+    renderRisk();
   }
 
   // ------------------------------------------------------------------ UI wiring
@@ -953,8 +1073,13 @@
     $("end-change").onclick = () => { $("end").classList.add("hidden"); $("intro").classList.remove("hidden"); };
     $("end-view").onclick = () => $("end").classList.add("hidden");
     $("open-intel").onclick = () => ($("intel").classList.contains("open") ? closeIntel() : openIntel());
+    $("risk-toggle").onclick = () => {
+      S.showRisk = !S.showRisk;
+      $("risk-toggle").classList.toggle("on", S.showRisk);
+      if (S.showRisk) { openIntel(); document.querySelector('.tab[data-tab="risk"]').click(); }
+    };
     $("close-intel").onclick = closeIntel;
-    $("zoom-reset").onclick = () => d3.select(fx).transition().duration(700).call(zoom.transform, d3.zoomIdentity);
+    $("zoom-reset").onclick = () => zoomHome();
     $("news-more").onclick = () => { $("headline-list").innerHTML = $("headlines").innerHTML || "<div class='muted'>No headlines yet.</div>"; $("headline-list").classList.toggle("hidden"); };
     $("replay").onclick = replay;
     for (const b of document.querySelectorAll(".speed button")) b.onclick = () => setSpeed(+b.dataset.speed);
@@ -983,6 +1108,7 @@
     try {
       const w = await (await fetch(`/api/world?n=${+$("n").value}&seed=${+$("seed").value}`)).json();
       layoutWorld(w);
+      loadRisk();
     } catch (e) { toast("Could not reach the ChonkVid server. Start it with `python -m chonkvid serve`."); }
   }
 
@@ -1007,6 +1133,7 @@
     await loadWorld();
     loadRuns();
     $("loading").classList.add("done");
+    setTimeout(() => $("loading").classList.add("hidden"), 500);
     requestAnimationFrame(frame);
   }
   init().catch((e) => { console.error(e); $("loading").innerHTML = "Could not load the map: " + esc(e.message); });
