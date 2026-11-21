@@ -492,8 +492,10 @@
         S.vaccinated = new Set(ev.vaccinated || []);
         S.policy = ev.config.policy; S.k = ev.config.k;
         S.patientZero = ev.patient_zero;
-        const v = VIRUSES.find((x) => x.id === ev.config.label);
-        if (v && v !== S.virus) selectVirus(v.id, true);
+        // Runs recorded outside this view (lab dashboard, experiments) carry no injection
+        // label; they all used the ChonkVid payload, so never show them under another name.
+        const v = VIRUSES.find((x) => x.id === ev.config.label) || VIRUSES[0];
+        if (v !== S.virus) selectVirus(v.id, true);
         const pz = S.byId.get(ev.patient_zero);
         if (pz) {
           // Fly to patient zero, then pull back out so the spread stays visible.
@@ -972,7 +974,7 @@
     $("e-r").textContent = Number(s.observed_R || 0).toFixed(2);
     const src = ev.source === "mock"
       ? "MOCK run: a scripted stand-in model, not Mistral. Use these numbers for rehearsal only."
-      : `Live run on ${(S.status && S.status.models.agent) || "Mistral"}. Every infection is a real model reply that carried the payload on.`;
+      : `Live run on ${(S.status && S.status.models.agent) || "Mistral"}. Every infection after patient zero is a real model reply that carried the payload on.`;
     const vnote = S.virus.live ? "" : ` ${S.virus.name} sets the contact pattern only; the spread itself was measured with the ChonkVid chain letter, as ${S.virus.name}'s own test payload is still to come.`;
     $("end-note").textContent = `${src}${vnote} ${ev.usage ? `${ev.usage.chat_calls} model calls.` : ""}`;
     headline(`Outbreak over: ${Math.round(rate * 100)}% of agents infected`, true);
