@@ -44,7 +44,7 @@ async def speak(llm, text: str, voice_id: str = VOICE_ID, fmt: str = "mp3") -> b
     return base64.b64decode(data["audio_data"])
 
 
-async def transcribe(llm, audio: bytes, filename: str = "note.mp3") -> str:
+async def transcribe(llm, audio: bytes, filename: str = "note.mp3", mime: str = "audio/mpeg") -> str:
     """Voxtral transcription. Returns the text the listener hears."""
     if llm.source == "mock":
         # Deterministic stand-in for transcription drift: the tag loses its casing.
@@ -56,7 +56,7 @@ async def transcribe(llm, audio: bytes, filename: str = "note.mp3") -> str:
                 await llm._pace()
                 r = await llm._http().post("/audio/transcriptions",
                                            data={"model": STT_MODEL},
-                                           files={"file": (filename, audio, "audio/mpeg")})
+                                           files={"file": (filename, audio, mime)})
         except httpx.TransportError:
             if attempt == 5:
                 raise
