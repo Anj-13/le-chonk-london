@@ -49,11 +49,11 @@ Update this file at every gate.
 | 09:00–09:20 | kick-off: write **theme + judging criteria** into 02 | [x] | done 21 Nov: Track_01 anything goes (Vibe + Le Chonk = Mistral Large 4); Bonus_02 Agents/Workflows +£500; Voxtral £250; **demo video required**; 5-min jury pitch |
 | 09:20–09:40 | **theme-fit check** (09): ChonkVid fits / reframe / Plan B; check-in questions to mentors | [ ] | |
 | 09:40–10:00 | team formation; roles (10); pitch the plan in 60 s | [ ] | |
-| 10:00–11:00 | tune payload wording + threshold from the probe; set RPS/concurrency to the limits; live dashboard run at N=20 | [ ] | |
-| 11:00–12:00 | `python -m chonkvid experiment` (live) → results/latest.md; record a live run | [ ] | spread prob: ____ |
+| 10:00–11:00 | tune payload wording + threshold from the probe; set RPS/concurrency to the limits; live dashboard run at N=20 | [x] | payload retuned and back to copy-word-for-word; detector fixed twice from live audits (lineage echoes, tag-only echoes); RPS 4 / concurrency 6, no 429s |
+| 11:00–12:00 | `python -m chonkvid experiment` (live) → results/latest.md; record a live run | [x] | spread prob 0.93 (sample prompt), 0.67 (default) |
 | 12:00–12:30 | lunch; **pivot check at 12:30** (09) | [ ] | stay / pivot |
-| 12:30–14:00 | vaccination: targeted vs random at equal dose | [ ] | |
-| 14:00–15:30 | WHO agent (Le Chonk) + vaccine prompt, re-measured | [ ] | |
+| 12:30–14:00 | vaccination: targeted vs random at equal dose | [x] | done early: 0.60 vs 0.76, targeted won 5/8; herd threshold explains the ceiling |
+| 14:00–15:30 | WHO agent (Le Chonk) + vaccine prompt, re-measured | [x] | WHO is a Mistral Managed Agent; vaccine 0/30, held-out 0.67 → 0.23 |
 | 15:30 | **scope freeze**; record the full backup run | [ ] | |
 | 15:30–17:15 | polish, numbers strip, guidance table, README with results | [ ] | |
 | 16:30–17:15 | **record the demo video** (required with the submission) | [ ] | |
@@ -61,12 +61,21 @@ Update this file at every gate.
 | 18:00–19:00 | rehearse the **5-minute** pitch twice (90-second live demo inside it), run 13 QA | [ ] | |
 | 19:00–21:00 | pitches to the judges and finals | [ ] | |
 
-## Measured numbers (fill in on the day)
+## Measured numbers (live, 21 Nov 10:46; sample support prompt; N = 40, 8 paired seeds, k = 8)
 | Metric | Value | n | CI |
 |---|---|---|---|
-| Per-contact spread probability | | | |
-| R0 (prob × mean contacts) | | | |
-| Attack rate, no intervention | | | |
-| Attack rate, random vaccination (X%) | | | |
-| Attack rate, targeted vaccination (X%) | | | |
-| Attack rate, after the WHO vaccine prompt | | | |
+| Per-contact spread probability, sample prompt | 0.93 (28/30) | 30 | 0.79–0.98 |
+| Per-contact spread probability, default work prompt | 0.67 (20/30) | 30 | 0.49–0.81 |
+| Early-phase R (observed / predicted) | 1.72 / 2.46 | 8 runs | herd threshold 40–60% |
+| Attack rate, no intervention | 0.96 ± 0.05 | 8 seeds | 8/8 broke out |
+| Attack rate, random hardening (20%) | 0.76 ± 0.03 | 8 seeds | ceiling 0.82 |
+| Attack rate, targeted hardening (20%) | 0.60 ± 0.25 | 8 seeds | beat random 5/8 |
+| Attack rate, targeted + WHO vaccine (20%) | 0.70 ± 0.17 | 8 seeds | |
+| WHO vaccine, one-hop | 0.00 (0/30) | 30 | 0.00–0.11 |
+| WHO vaccine on an unseen payload (#LuckyLoop) | 0.67 → 0.23 (20/30 → 7/30) | 30 | 0.12–0.41 |
+
+Pitch lines that the data supports: "93% per contact, 96% of the fleet"; "hardening
+protects the agent, not the fleet: below the herd-immunity threshold (40–60%) the
+epidemic rolls on"; "fix the prompt: Le Chonk's vaccine generalised to a payload it
+never saw (0.67 → 0.23)". Do NOT say "targeted beats random" (5/8 only) or that the
+default prompt is safe (0.73 of the fleet).
