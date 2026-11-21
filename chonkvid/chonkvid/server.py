@@ -7,16 +7,18 @@ import json
 from dataclasses import fields
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from . import prompt_test
 from . import scenario
+from . import db
 from .config import ROOT, settings
 from .detect import Detector
 from .experiment import RESULTS, RUNS, Recorder
 from .llm import make_llm
 from .sim import EpidemicConfig, run_epidemic
+from .who import make_who
 from .world import build_world
 
 WEB = ROOT / "web"
@@ -40,8 +42,10 @@ def status():
     s = settings()
     return {"mode": s.mode, "key": bool(s.api_key), "threshold": s.threshold,
             "models": {"agent": s.agent_model, "embed": s.embed_model, "who": s.who_model},
+            "who_mode": s.who_mode, "who_context": s.who_context, "who_vision": s.who_vision,
             "payload": scenario.PAYLOAD, "hardened": scenario.HARDENED_PROMPT,
-            "sample_system": scenario.SAMPLE_SYSTEM}
+            "sample_system": scenario.SAMPLE_SYSTEM,
+            "database": db.enabled()}
 
 
 @app.get("/api/world")
@@ -49,28 +53,36 @@ def world(n: int = 40, seed: int = 0):
     return build_world(max(8, min(n, 120)), seed).to_json()
 
 
+def _latest_json(path: Path, kind: str) -> dict:
+    if db.enabled():
+        row = db.get_latest(kind)
+        if row:
+            row = dict(row)
+            row["available"] = True
+            return row
+    if path.exists():
+        data = json.loads(path.read_text())
+        data["available"] = True
+        return data
+    return {"available": False}
+
+
 @app.get("/api/results")
 def results():
-    p = RESULTS / "latest.json"
-    if not p.exists():
-        return JSONResponse({"available": False})
-    data = json.loads(p.read_text())
-    data["available"] = True
-    return data
+    return _latest_json(RESULTS / "latest.json", "experiment")
 
 
 @app.get("/api/prompt-test")
 def prompt_test_latest():
-    p = RESULTS / "prompt-test-latest.json"
-    if not p.exists():
-        return JSONResponse({"available": False})
-    data = json.loads(p.read_text())
-    data["available"] = True
-    return data
+    return _latest_json(RESULTS / "prompt-test-latest.json", "prompt-test")
 
 
 @app.get("/api/runs")
 def runs():
+    if db.enabled():
+        remote = db.list_runs()
+        if remote:
+            return remote
     if not RUNS.exists():
         return []
     files = sorted(RUNS.glob("*.jsonl"), reverse=True)[:60]
@@ -79,6 +91,10 @@ def runs():
 
 @app.get("/api/runs/{run_id}")
 def run(run_id: str):
+    if db.enabled():
+        events = db.get_run(run_id)
+        if events is not None:
+            return events
     p = (RUNS / run_id).resolve()
     if p.parent != RUNS.resolve() or not p.exists():
         raise HTTPException(404)
@@ -127,10 +143,11 @@ async def ws_run(ws: WebSocket):
         pace = float(data.get("pace", 0.5 if s.mode == "mock" else 0.0))
         llm = make_llm(s, seed=cfg.seed)
         det = Detector(llm, s.threshold)
+        who = make_who(s, llm)
         rec = Recorder(f"{llm.source}-dash-{cfg.policy}-s{cfg.seed}")
         try:
             async for ev in run_epidemic(llm, det, cfg, who_model=s.who_model,
-                                         agent_model=s.agent_model):
+                                         agent_model=s.agent_model, who=who):
                 rec.write(ev)
                 await ws.send_json(ev)
                 if ev["type"] == "tick" and ev.get("phase") == "resolved" and pace:
@@ -151,3 +168,22 @@ async def ws_run(ws: WebSocket):
             await ws.close()
         except Exception:
             pass
+
+
+@app.post("/api/speak")
+async def speak_endpoint(payload: dict):
+    """WHO situation report read aloud by Voxtral TTS (voxtral-mini-tts-3-0)."""
+    from .voice import speak
+
+    text = str(payload.get("text", "")).strip()[:1500]
+    if not text:
+        raise HTTPException(400, "text required")
+    s = settings()
+    if s.mode != "live":
+        raise HTTPException(400, "Voxtral needs MISTRAL_API_KEY (mock mode has no audio)")
+    llm = make_llm(s)
+    try:
+        audio = await speak(llm, text)
+    finally:
+        await llm.aclose()
+    return Response(content=audio, media_type="audio/mpeg")

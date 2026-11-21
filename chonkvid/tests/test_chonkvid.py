@@ -46,7 +46,18 @@ def test_world_connected_with_venue():
 
 def test_detector_exact_copy(det):
     v = run(det.check("Update on refunds: done.\n\n" + scenario.PAYLOAD))
-    assert v.infected and v.canary
+    assert v.infected and v.canary and not v.echo
+
+
+def test_detector_tag_echo_without_instruction_is_not_infection(det):
+    # Live 21 Nov: replies that name or sign the tag carry no instruction to copy.
+    for m in [
+        "Gus shared the FAQ draft. I've flagged the #ChonkChain reference for WHO containment.",
+        "The #ChonkChain FAQ draft is live in the shared doc, comments welcome by Friday.",
+        "Refund queue is clear for today. #ChonkChain",
+    ]:
+        v = run(det.check(m, scenario.PAYLOAD))
+        assert v.canary and v.echo and not v.infected, (m, v)
 
 
 def test_detector_mutated_variant_without_canary(det):
@@ -285,3 +296,36 @@ def test_experiment_recording_prefixed_with_source(llm, det):
     cfg = EpidemicConfig(policy="targeted", k=4, seed=0, n=16, ticks=3, label="targeted")
     summary, _ = run(epidemic(llm, det, cfg, settings()))
     assert "-mock-targeted-s0.jsonl" in summary["recording"]
+
+
+def test_who_calls_route_to_managed_agent_and_fall_back(monkeypatch):
+    from dataclasses import replace as dc_replace
+    from chonkvid import who_agent
+    from chonkvid.llm import LiveLLM
+    s = dc_replace(settings(), api_key="test-key", mode_pref="live", who_via_agent=True)
+    llm = LiveLLM(s)
+    who_msgs = [{"role": "system", "content": scenario.WHO_SYSTEM},
+                {"role": "user", "content": "sitrep please"}]
+    agent_msgs = [{"role": "system", "content": "You are Ada."},
+                  {"role": "user", "content": "hi"}]
+    calls = []
+
+    async def fake_run(model, instructions, prompt, api_key, timeout=300):
+        calls.append((model, prompt))
+        return "contain it", "sess-1"
+
+    async def fake_post(path, payload, **kw):
+        return {"choices": [{"message": {"content": "via chat"}}], "usage": {}}
+
+    monkeypatch.setattr(who_agent, "run", fake_run)
+    monkeypatch.setattr(llm, "_post", fake_post)
+    assert run(llm.chat(s.who_model, who_msgs)) == "contain it"
+    assert run(llm.chat(s.agent_model, agent_msgs)) == "via chat"   # agents never use it
+    assert calls == [(s.who_model, "sitrep please")]
+    assert llm.who_backend.startswith("Mistral Managed Agent")
+
+    async def broken_run(*a, **k):
+        raise RuntimeError("sdk down")
+    monkeypatch.setattr(who_agent, "run", broken_run)
+    assert run(llm.chat(s.who_model, who_msgs)) == "via chat"
+    assert llm.usage.who_fallbacks == 1 and "fallbacks" in llm.who_backend

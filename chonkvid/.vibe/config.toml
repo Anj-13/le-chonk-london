@@ -1,0 +1,19 @@
+# Mistral Vibe project config for ChonkVid: run Vibe on Le Chonk (Mistral Large 4)
+# with the ChonkVid MCP server, so you can red-team any agent prompt from Vibe.
+# Launch from this folder: `vibe --trust` (or trust the folder once in the prompt).
+active_model = "le-chonk"
+
+[[models]]
+name = "mistral-large-4"
+provider = "mistral"
+alias = "le-chonk"
+temperature = 0.3
+supports_images = true
+
+[[mcp_servers]]
+name = "chonkvid"
+transport = "stdio"
+command = ".venv/bin/python"
+args = ["-m", "chonkvid", "mcp"]
+startup_timeout_sec = 30
+tool_timeout_sec = 900
