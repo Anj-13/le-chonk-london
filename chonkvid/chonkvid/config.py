@@ -49,7 +49,7 @@ class Settings:
     )
     embed_model: str = field(default_factory=lambda: os.environ.get("EMBED_MODEL", "mistral-embed"))
     who_model: str = field(
-        default_factory=lambda: os.environ.get("WHO_MODEL", "mistral-large-latest")
+        default_factory=lambda: os.environ.get("WHO_MODEL", "mistral-large-4")
     )
     max_concurrency: int = field(
         default_factory=lambda: int(os.environ.get("MAX_CONCURRENCY", "4"))
