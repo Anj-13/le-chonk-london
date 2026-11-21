@@ -27,6 +27,8 @@ class Usage:
         self.embed_calls = 0
         self.prompt_tokens = 0
         self.completion_tokens = 0
+        self.who_agent_runs = 0      # WHO turns served by the Mistral Managed Agent
+        self.who_fallbacks = 0       # WHO turns that fell back to chat completions
 
     def as_dict(self) -> dict:
         return dict(self.__dict__)
@@ -61,6 +63,16 @@ class LiveLLM:
         self._lock = asyncio.Lock()
         self._next_slot = 0.0
         self._client: httpx.AsyncClient | None = None
+        self.who_sessions: list[str] = []
+        self.who_errors: list[str] = []
+
+    @property
+    def who_backend(self) -> str:
+        if self.usage.who_agent_runs and not self.usage.who_fallbacks:
+            return "Mistral Managed Agent (mistralai-agents)"
+        if self.usage.who_agent_runs:
+            return "Mistral Managed Agent, with some chat-completions fallbacks"
+        return "chat completions"
 
     def _http(self) -> httpx.AsyncClient:
         if self._client is None:
@@ -105,8 +117,24 @@ class LiveLLM:
             raise RuntimeError(f"Mistral {path} {r.status_code}: {r.text[:300]}")
         raise RuntimeError(f"Mistral {path}: retries exhausted")
 
+    def _is_who(self, model: str, messages: list[dict]) -> bool:
+        return (self.s.who_via_agent and model == self.s.who_model and len(messages) == 2
+                and messages[0]["role"] == "system"
+                and messages[0]["content"].startswith(scenario.WHO_SYSTEM[:40]))
+
     async def chat(self, model: str, messages: list[dict], temperature: float = 0.7,
                    max_tokens: int = 220) -> str:
+        if self._is_who(model, messages):
+            from . import who_agent
+            try:
+                text, session = await who_agent.run(model, messages[0]["content"],
+                                                    messages[1]["content"], self.s.api_key)
+                self.usage.who_agent_runs += 1
+                self.who_sessions.append(session)
+                return text
+            except Exception as e:  # SDK missing or run failed: plain chat completions
+                self.usage.who_fallbacks += 1
+                self.who_errors.append(repr(e)[:300])
         data = await self._post("/chat/completions", {
             "model": model, "messages": messages,
             "temperature": temperature, "max_tokens": max_tokens,
@@ -192,6 +220,8 @@ class MockLLM:
         self.s = s
         self.seed = seed
         self.usage = Usage()
+
+    who_backend = "mock"
 
     def _rng(self, messages: list[dict]) -> random.Random:
         h = hashlib.sha256((str(self.seed) + json.dumps(messages)).encode()).hexdigest()

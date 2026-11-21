@@ -184,6 +184,8 @@ async def run_experiment(llm, s: Settings, n_agents: int = 40, seeds: int = 3,
         "mean_reduction": mean(paired), "wins": sum(1 for d in paired if d > 0),
         "ties": sum(1 for d in paired if d == 0), "pairs": len(paired)}
     out["usage"] = llm.usage.as_dict()
+    out["who_backend"] = llm.who_backend
+    out["who_sessions"] = getattr(llm, "who_sessions", [])[-5:]
     out["seconds"] = round(time.time() - t0, 1)
     save(out)
     return out
@@ -244,7 +246,9 @@ def markdown(out: dict) -> str:
               f"({tv['ties']} ties); mean attack-rate reduction {tv['mean_reduction']:.2f}.", "",
               f"Breakout = patient zero's chain reached at least {BREAKOUT_MIN} other agents; "
               "single-seed epidemics often fade out by chance.", "",
-              "## WHO vaccine prompt (Le Chonk WHO agent)", "", "```", out["who_vaccine"], "```", "",
+              "## WHO vaccine prompt (Le Chonk WHO agent)", "",
+              f"Written by `{out['models']['who']}` via **{out.get('who_backend', 'chat completions')}**.", "",
+              "```", out["who_vaccine"], "```", "",
               *([f"Held-out check: the vaccine was also measured against a different payload "
                  f"with a marker it never saw (`{out['heldout']['canary']}`): see the held-out "
                  "rows in the trials table.", ""] if out.get("heldout") else []),

@@ -58,6 +58,9 @@ class Settings:
     # Detection thresholds differ by embedding space; calibrate live with `probe`.
     threshold_live: float = field(default_factory=lambda: _f("EMBED_THRESHOLD", 0.86))
     threshold_mock: float = field(default_factory=lambda: _f("MOCK_EMBED_THRESHOLD", 0.5))
+    who_via_agent: bool = field(
+        default_factory=lambda: os.environ.get("WHO_VIA_AGENT", "1").lower() not in ("0", "false", "no")
+    )
     mock_p_base: float = field(default_factory=lambda: _f("MOCK_P_BASE", 0.55))
 
     @property
