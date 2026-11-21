@@ -32,7 +32,9 @@ AI scientists in the room may know the prior work on self-spreading LLM payloads
 - **"Agent Smith"** (Gu et al., ICML 2024): one adversarial image spreads an infectious
   jailbreak through up to a million multimodal agents exponentially fast.
 
+- **Prompt Infection** (Lee & Tiwari, arXiv 2410.07283, Oct 2024; verified 21 Nov): self-replicating prompts across interconnected agents, plus an "LLM Tagging" defence. https://arxiv.org/abs/2410.07283 **This is the closest prior art**: same attack, multi-agent setting, a defence.
+
 Our answer: they showed that spread happens. We measure transmissibility on Mistral
 models and show which interventions work, including targeted versus random hardening
-at the same dose. Cite both papers ourselves before a judge does. (Citations are from
-memory: check titles and authors before putting them on a slide.)
+at the same dose. Cite both papers ourselves before a judge does. (Morris II and Agent Smith
+citations are from memory: check before putting them on a slide. Prompt Infection is verified.)

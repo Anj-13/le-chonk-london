@@ -17,6 +17,20 @@ shortlist idea before team formation at 09:40.
 **Pivot trigger:** by 12:30 the live one-hop trials show spread probability near 0
 or near 1 and tuning the payload wording does not fix it.
 
+## Re-check, 21 Nov 02:10 (after the decision-engine prompt)
+**Verdict: Option B, a small upgrade. Keep ChonkVid; failover stays Plan B.** Its margin is narrower than the funnel said:
+- **New prior art:** Prompt Infection (arXiv 2410.07283) already showed self-replicating prompts across agents plus a defence. The creativity score drops.
+- **"Targeted beats random" is textbook** network epidemiology (hub immunisation), so on its own it isn't a finding.
+- **The funnel's win over failover leaned on the "provably minimal set" upgrade**, which was withdrawn. Restated honestly: ChonkVid wins on demo and memorability, failover wins on certainty, and the gap is small.
+- **The email wants "a working app, not slides"**, and a simulation can read as an experiment.
+
+**The upgrade that answers all four: a bring-your-own-prompt mode.** Paste your agent's system prompt and get its spread probability ± CI, then the vaccinated rate verified by the same trials. The headline becomes "an R0 test for your system prompt", which turns the simulation into an app with a real user. The epidemic stays as the visual proof.
+
+**What flips the verdict:**
+- probe p near 0 or near 1 that doesn't respond to payload wording → Plan B;
+- a theme at 09:00 that ChonkVid can't honestly frame → Plan B or the best-fitting shortlist idea;
+- event credit rate limits too low for ~300 calls/hour → shrink to trials plus a small epidemic.
+
 ## Shortlist
 | Idea | Score | Verdict |
 |---|---|---|
@@ -31,5 +45,5 @@ or near 1 and tuning the payload wording does not fix it.
 ## Honest caveats on the evidence
 - The "blind panel rediscovered the epidemic idea" argument is circular: that panel
   was assigned epidemiology. Do not use it in the pitch or as validation.
-- The "10/10" validation was self-generated. The real test is whether Ministral
+- The "10/10" validation was self-generated, and so is every score in the table above. The real test is whether Ministral
   actually copies the payload. **Run the ~20-call probe at 11:00, first thing after the mock loop works.**

@@ -17,8 +17,9 @@
   no intervention vs random vs targeted vaccination at the same dose.
 - **Built with:** Ministral (population), mistral-embed (infection detection, variant
   lineages), Le Chonk (WHO agent and vaccine prompt), Mistral Vibe (build tool).
-- **Prior work:** extends Morris II (Cohen et al., 2024) and Agent Smith (Gu et al.,
-  2024) from "spread happens" to "here is what stops it".
+- **Prior work:** extends Prompt Infection (Lee & Tiwari, 2024, arXiv 2410.07283), Morris II
+  (Cohen et al., 2024) and Agent Smith (Gu et al., 2024) from "spread happens" to a
+  measured spread rate per system prompt and a vaccine verified by the same measurement.
 - **Safety:** harmless chain-letter payload, sim-local agents, no real users or
   platforms.
 
