@@ -145,6 +145,18 @@ function addMsg(feedId, cls, meta, body, agent) {
   while (f.children.length > 150) f.lastChild.remove();
   if (tickerFilter != null && feedId === "ticker" && String(agent) !== String(tickerFilter)) d.classList.add("hidden");
 }
+// WHO briefing read aloud by Voxtral TTS (server: POST /api/speak)
+async function speakText(text, btn) {
+  const label = btn.textContent; btn.disabled = true; btn.textContent = "… Voxtral";
+  try {
+    const r = await fetch("/api/speak", {method: "POST", headers: {"Content-Type": "application/json"},
+                                         body: JSON.stringify({text})});
+    if (!r.ok) throw new Error(await r.text());
+    const audio = new Audio(URL.createObjectURL(await r.blob()));
+    await audio.play();
+  } catch (e) { btn.title = String(e); }
+  btn.disabled = false; btn.textContent = label;
+}
 function filterTicker(id) {
   tickerFilter = tickerFilter === id ? null : id;
   $("sel").textContent = tickerFilter == null ? "" : `showing ${names[id]} · click again to clear`;
@@ -178,7 +190,14 @@ function handle(ev) {
     case "resisted":
       addMsg("ticker", "resisted", `t${ev.tick} · ${names[ev.agent]} resisted${ev.vaccinated ? " (hardened)" : ""} · score ${f2(ev.verdict.score)}`, ev.message, ev.agent);
       break;
-    case "sitrep": addMsg("who-feed", "sitrep", `WHO · tick ${ev.tick}`, ev.text); break;
+    case "sitrep": {
+      addMsg("who-feed", "sitrep", `WHO · tick ${ev.tick}`, ev.text);
+      const b = document.createElement("button");
+      b.textContent = "🔊 Listen (Voxtral)"; b.className = "listen";
+      b.onclick = () => speakText(ev.text, b);
+      $("who-feed").firstChild.appendChild(b);
+      break;
+    }
     case "end": {
       const s = ev.summary;
       addMsg("who-feed", "sitrep", `Run complete (${ev.source})`, `Attack rate ${pct(s.attack_rate)} · peak ${s.peak_infectious} infected at tick ${s.peak_tick} · ${s.vaccinated_infected}/${s.k} hardened agents infected · ${ev.usage.chat_calls} model calls`);

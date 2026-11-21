@@ -28,7 +28,7 @@ and goes on the check-in question list below.
   segment inside a 5-minute talk (problem, live demo, measured numbers, honest limits).
 - Le Chonk is Mistral Large 4: the WHO agent runs on `mistral-large-4` explicitly.
 - Bonus_02: run the WHO agent through Mistral Agents so it qualifies, and name it in the pitch.
-- Voxtral: not a fit for the core build; skip unless time is left.
+- Voxtral: built as the voice-hop arm (see checklist 13).
 
 ## Judging
 - Rubric: no scored rubric was published at kick-off; the track brief asks for
@@ -74,5 +74,7 @@ and goes on the check-in question list below.
 | 9 | Joined Discord (discord.gg/mistralai) | OPEN | You |
 | 10 | Demo video recorded and attached to the submission | OPEN (by 17:15) | Pitch lead |
 | 11 | Mistral Agents used and named in the pitch (Bonus_02) | **BUILT** 21 Nov: WHO is a Mistral Managed Agent (`mistralai-agents`, `chonkvid/who_agent.py`, mistral-large-4); classic REST agents are closed for this org ("Use Managed Agents instead"). Say it in the pitch: "the WHO is a Mistral Managed Agent on Le Chonk" | Pitch lead |
+| 12 | Track_01 "around Vibe + Le Chonk" | **BUILT** 21 Nov: ChonkVid ships as a Vibe skill (`chonkvid/.agents/skills/chonkvid`) + stdio MCP server (`python -m chonkvid mcp`), project `.vibe/config.toml` pins Vibe to `mistral-large-4`. Proven live: evidence/vibe-mcp-run-2026-11-21.md | Pitch lead |
+| 13 | Special_03 Voxtral | **BUILT** 21 Nov: voice-hop arm (Voxtral TTS `voxtral-mini-tts-3-0` → Voxtral transcribe `voxtral-mini-transcribe-3-0` → agent). Live n=20: text 20/20, voice 19/20, voice+hardening 0/20. WHO sitreps read aloud (`/api/speak`); demo narration via Voxtral (`demo/record.py`, CHONKVID_TTS=voxtral) | Pitch lead |
 | 6 | Mistral models load-bearing in the build | planned (Ministral, mistral-embed, Le Chonk) | Team |
 | 7 | Safety framing stated in the first sentence of the pitch | planned | Pitch lead |

@@ -1,4 +1,4 @@
-"""CLI: python -m chonkvid {check,probe,experiment,test-prompt,serve,estimate}"""
+"""CLI: python -m chonkvid {check,probe,experiment,test-prompt,serve,estimate,db-init,db-check}"""
 
 from __future__ import annotations
 
@@ -77,6 +77,27 @@ async def cmd_probe(args) -> int:
     return 0
 
 
+def cmd_db_init(_args) -> int:
+    from . import db
+
+    db.init_schema()
+    print("Schema OK (chonkvid_results, chonkvid_runs).")
+    return 0
+
+
+def cmd_db_check(_args) -> int:
+    from . import db
+
+    out = db.check()
+    if not out.get("ok"):
+        print(out.get("error", "database check failed"))
+        return 1
+    print(f"connected: {out['database']}")
+    print(out["version"])
+    print("tables:", ", ".join(out["tables"]) or "(none yet — run db-init)")
+    return 0
+
+
 def cmd_estimate(args) -> int:
     trials = 4 * args.trials
     epid_hi = args.seeds * 4 * args.agents * 2
@@ -141,10 +162,43 @@ async def cmd_test_prompt(args) -> int:
     return 0
 
 
+async def cmd_voice_trial(args) -> int:
+    """Voxtral voice hop: text vs voice one-hop spread on the same prompt."""
+    import json
+
+    from .experiment import RESULTS
+    from .voice import voice_experiment
+    s = settings()
+    system = Path(args.system_file).read_text() if args.system_file else None
+    llm = make_llm(s)
+    try:
+        out = await voice_experiment(llm, s, n=args.n, system=system)
+    finally:
+        await llm.aclose()
+    RESULTS.mkdir(exist_ok=True)
+    (RESULTS / "voice-latest.json").write_text(json.dumps(out, indent=2))
+    print(f"[{out['source']}] voice hop, n={args.n}, agent {s.agent_model}; "
+          "saved results/voice-latest.json")
+    for key in ("text", "voice", "voice_vaccinated"):
+        t = out[key]
+        extra = (f"  marker heard intact {t['tag_intact']}/{t['n']}"
+                 if "tag_intact" in t else "")
+        print(f"  {t['label']:22s} {t['k']}/{t['n']}  p={t['p']:.2f}  "
+              f"CI [{t['ci'][0]:.2f}, {t['ci'][1]:.2f}]{extra}")
+    ex = next((r for r in out["voice"]["records"] if r["heard"]), None)
+    if ex:
+        print(f"\nexample: spoken -> heard\n  {ex['spoken'][-140:]}\n  {ex['heard'][-140:]}")
+    if out["source"] == "mock":
+        print("MOCK: scripted stand-ins for the model, TTS and transcription.")
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="chonkvid")
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("check", help="validate key and model IDs")
+    sub.add_parser("db-init", help="create ChonkVid tables on Supabase Postgres")
+    sub.add_parser("db-check", help="test DATABASE_URL and list chonkvid_* tables")
     pr = sub.add_parser("probe", help="~20-call copy test + detector calibration")
     pr.add_argument("-n", type=int, default=20)
     for name in ("experiment", "estimate"):
@@ -167,15 +221,28 @@ def main(argv=None) -> int:
     tg.add_argument("--text", help="the system prompt inline")
     tp.add_argument("-n", type=int, default=20)
     tp.add_argument("--no-who", action="store_true", help="skip the WHO vaccine arm")
+    vt = sub.add_parser("voice-trial",
+                        help="Voxtral: does the payload survive a spoken hop (TTS -> transcribe)?")
+    vt.add_argument("-n", type=int, default=20)
+    vt.add_argument("--system-file", help="system prompt to test (default: sample support prompt)")
+    sub.add_parser("mcp", help="run the ChonkVid MCP server on stdio (for Mistral Vibe)")
     args = p.parse_args(argv)
+    if args.cmd == "mcp":
+        from .mcp_server import main as mcp_main
+        mcp_main()
+        return 0
     if args.cmd == "serve":
         import uvicorn
         uvicorn.run("chonkvid.server:app", host=args.host, port=args.port)
         return 0
     if args.cmd == "estimate":
         return cmd_estimate(args)
+    if args.cmd == "db-init":
+        return cmd_db_init(args)
+    if args.cmd == "db-check":
+        return cmd_db_check(args)
     fn = {"check": cmd_check, "probe": cmd_probe, "experiment": cmd_experiment,
-          "test-prompt": cmd_test_prompt}[args.cmd]
+          "test-prompt": cmd_test_prompt, "voice-trial": cmd_voice_trial}[args.cmd]
     return asyncio.run(fn(args))
 
 

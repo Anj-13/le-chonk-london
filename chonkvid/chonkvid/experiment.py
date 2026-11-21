@@ -29,12 +29,19 @@ class Recorder:
         stamp = time.strftime("%Y%m%d-%H%M%S")
         self.path = RUNS / f"{stamp}-{label}.jsonl"
         self._f = self.path.open("w")
+        self.label = label
 
     def write(self, ev: dict) -> None:
         self._f.write(json.dumps(ev) + "\n")
 
     def close(self) -> None:
         self._f.close()
+        try:
+            from . import db
+
+            db.sync_run_file(self.path)
+        except Exception:
+            pass  # disk is source of truth; DB is optional
 
 
 async def epidemic(llm, detector, cfg: EpidemicConfig, s: Settings, record: bool = True,
@@ -200,6 +207,12 @@ def save(out: dict) -> None:
     for name in ("latest.json", f"results-{stamp}-{out['source']}.json"):
         (RESULTS / name).write_text(json.dumps(slim, indent=2))
     (RESULTS / "latest.md").write_text(markdown(out))
+    try:
+        from . import db
+
+        db.upsert_latest("experiment", slim)
+    except Exception:
+        pass
 
 
 def markdown(out: dict) -> str:
