@@ -1,6 +1,6 @@
 """Attack-risk forecast from recorded runs.
 
-Every recorded run (runs/*.jsonl, or the Supabase chonkvid_runs table) says which
+Every recorded run (runs/*.jsonl, the recordings /api/runs lists) says which
 attack was released (config.label), what the contact network looked like, who was
 vaccinated and who got infected. This module turns that history into a forecast:
 for a given attack type, how likely is each agent in a world to be infected if that
@@ -27,8 +27,6 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-
-from . import db
 
 PRIOR_WEIGHT = 4.0
 MAX_RUNS = 200
@@ -107,18 +105,8 @@ def parse_run(events: list[dict]) -> dict | None:
 
 
 def load_runs(limit: int = MAX_RUNS, runs_dir: Path | None = None) -> list[tuple[str, list[dict]]]:
-    """Recorded runs, newest first: Supabase when configured, else the runs folder."""
+    """Recorded runs from the runs folder, newest first (the same recordings /api/runs lists)."""
     out: list[tuple[str, list[dict]]] = []
-    if db.enabled():
-        try:
-            for row in db.list_runs(limit):
-                events = db.get_run(row["id"])
-                if events:
-                    out.append((str(row["id"]), events))
-        except Exception:
-            out = []
-        if out:
-            return out
     if runs_dir is None:
         from .experiment import RUNS
         runs_dir = RUNS

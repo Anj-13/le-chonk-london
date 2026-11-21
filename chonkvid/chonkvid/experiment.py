@@ -10,6 +10,7 @@ import os
 import time
 from dataclasses import replace
 from pathlib import Path
+from uuid import uuid4
 
 from . import scenario
 from .config import ROOT, Settings
@@ -24,11 +25,16 @@ RESULTS = Path(os.environ.get("CHONKVID_RESULTS_DIR") or ROOT / "results")
 
 
 class Recorder:
-    def __init__(self, label: str) -> None:
-        RUNS.mkdir(exist_ok=True)
+    def __init__(self, label: str, *, directory: Path | None = None) -> None:
+        directory = directory if directory is not None else RUNS
+        directory.mkdir(parents=True, exist_ok=True)
         stamp = time.strftime("%Y%m%d-%H%M%S")
-        self.path = RUNS / f"{stamp}-{label}.jsonl"
-        self._f = self.path.open("w")
+        self.path = directory / f"{stamp}-{label}.jsonl"
+        try:
+            self._f = self.path.open("x")
+        except FileExistsError:
+            self.path = directory / f"{stamp}-{label}-{uuid4().hex}.jsonl"
+            self._f = self.path.open("x")
         self.label = label
 
     def write(self, ev: dict) -> None:
@@ -36,12 +42,6 @@ class Recorder:
 
     def close(self) -> None:
         self._f.close()
-        try:
-            from . import db
-
-            db.sync_run_file(self.path)
-        except Exception:
-            pass  # disk is source of truth; DB is optional
 
 
 async def epidemic(llm, detector, cfg: EpidemicConfig, s: Settings, record: bool = True,
@@ -58,6 +58,8 @@ async def epidemic(llm, detector, cfg: EpidemicConfig, s: Settings, record: bool
             summary = ev["summary"]
     if rec:
         rec.close()
+        from . import db
+        db.sync_run_file(rec.path)
         summary["recording"] = rec.path.name
     return summary, events
 
@@ -214,12 +216,8 @@ def save(out: dict) -> None:
     for name in ("latest.json", f"results-{stamp}-{out['source']}.json"):
         (RESULTS / name).write_text(json.dumps(slim, indent=2))
     (RESULTS / "latest.md").write_text(markdown(out))
-    try:
-        from . import db
-
-        db.upsert_latest("experiment", slim)
-    except Exception:
-        pass
+    from . import db
+    db.upsert_latest("experiment", slim)
 
 
 def markdown(out: dict) -> str:
