@@ -1,5 +1,8 @@
 # Le Chonk in London: Mistral Vibe Hackathon
 
+> **Superseded on scope (21 Nov, 01:00):** masks, lockdown, quarantine-first demo, GAIA tasks and
+> city mode were cut on 20 Nov night. Build to command-centre/10 and 11; demo arc in command-centre/07.
+
 - Event: Saturday 21 Nov 2026, 08:30-20:30 GMT, Fora - Chancery House, 53-64
   Chancery Ln, London WC2A 1QS (Chancery Lane tube).
 - Team: 3-5 (default teammate Isaiah Paul; team formation on the spot at 08:30).

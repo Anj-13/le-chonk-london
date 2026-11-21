@@ -1,37 +1,25 @@
-# 06 — Past Winners & Winning Patterns (lablab.ai platform)
+# 06 — Past Winners (Mistral Worldwide Hackathon, Feb 2026)
 
-**Last verified: 2026-11-05.** Focus: agent-relevant lablab events. Note: lablab results pages show winners + community votes; GitHub/demo links require opening individual project pages.
+**Assembled 2026-11-20** from organiser pages, judge recaps, winner write-ups and
+Iterate's showcase. Full analysis: ../FINAL-VALIDATION.md.
 
-## Analyzed events
+| Project | Result | What it was | Why it likely won | Pattern we take |
+|---|---|---|---|---|
+| **Mistralverse** | Global winner (London) | autonomous AI civilisation in a metaverse | population-scale emergent behaviour, spectacle | many agents and a visible world; we add control and measurement |
+| **WingFox** | Tokyo winner | video production via Remotion + ElevenLabs + Mistral | original idea, new tech learned on the day | end the demo on an artefact |
+| **Veristral** | Paris winner | live fact-checking of political TV | civic bite, live input | a real threat on screen beats slides |
+| **Lean Agent** | 2nd, NYC | LLM maths claims checked by the Lean compiler | verification separate from generation | infection verified by embeddings, R0 measured, never asserted |
+| **Ministral-3B-Sec** | Iterate showcase | safety fine-tune: refuse malicious, answer benign | safety made explicit and measured | safety is our whole frame |
+| **Hydra Ministral** | winner | speculative decoding, 1.33x faster, ~60% acceptance | numbers with baselines | lead with numbers |
+| **Poltergeist** | winner | actively searched for model failures | red-team posture | we hunt the failure, then fix it |
 
-### Band of Agents Hackathon (Jun 2026) — 391 projects, 1,369 teams, 4,325 participants
-| Place | Project | Team | What it is |
-|---|---|---|---|
-| 🥇 | Freight Room: response room for ship delays | Band Baaja Baaraat | Multi-agent coordination for shipping-delay response |
-| 🥈 | Recoverflow — "Cross-border AR on autopilot" | Judy AI Lab | Accounts-receivable automation agents |
-| 🥉 | ClaimArbiter | SoloRun | Claims adjudication |
-| Finalists | DeployGuard (PR security gate), ProcureGuard AI, AgentWard (clinical command console), HealthVet | — | All enterprise/guardian framing |
+## Repeated judge preferences
+1. User problem and safety first (NYC judge, on record).
+2. Measured evidence over confident claims.
+3. Spectacle with a final frame anyone understands.
+4. Execution over ideas.
 
-### AssemblyAI Voice Agent Hackathon (Sep 2026) — 501 projects, 1,325 teams
-| Place | Project | Team |
-|---|---|---|
-| 🥇 | Concierge | SoloRobot |
-| Community top | Soba (voice emotional companion, 112 votes), OmniDesk, Goose! Goose! Cook! | — |
-
-## Winning patterns (ranked by evidence strength)
-1. **Business-operational problems beat consumer toys.** Band of Agents: all top-3 + finalists target logistics/finance/procurement/security/healthcare workflows. Community favourite (147 votes) did NOT win → judges reward business viability over popularity. [Strong evidence — n=1 event, consistent across finalists]
-2. **"Guardian/control-plane" framing recurs in finalists** (DeployGuard, AgentWard, ProcureGuard). For a containment-themed event this maps perfectly. [Medium evidence]
-3. **Clear one-line positioning wins attention:** "Cross-border AR on autopilot" — name: outcome pattern. [Strong evidence from result tables]
-4. **Solo teams CAN win** (ClaimArbiter by SoloRun; Concierge by SoloRobot — names suggest solo entries). [Medium evidence]
-5. **Scale of competition:** 391–501 submissions on comparable lablab events → expect a few hundred projects; completeness alone puts you in a small elite. [Verified]
-6. **Judging weights business value heavily** (4 equal-looking criteria but winners skew enterprise-useful + well-presented). [Inference from repeated outcomes]
-
-## Implications for Agent Rush
-- Pick a workflow with a clear business owner (ops, finance, security, QA, data) — not "AI companion".
-- The containment angle is our lablab equivalent of "Guardian" framing — make safety THE product feature, visible on screen.
-- Aim: top-10% completeness (live URL + video with containment moment + slides + README) beats 90% of the field; differentiation decides top-3.
-- Community voting exists but does not decide prizes → don't spend time campaigning; spend it on the demo.
-
-## Gaps
-- Individual winner GitHub repos / demo videos not yet inspected (results dashboards don't expose them directly). UNKNOWN how much polish winners' videos had.
-- No Vultr-specific past winners analyzed yet (first Vultr×lablab event of this kind found).
+## The gap
+Every celebrated project tested or celebrated one system's capability. None modelled
+what happens between agents in a deployed fleet, and none closed the loop with an
+intervention that visibly works. That gap is ChonkVid's.

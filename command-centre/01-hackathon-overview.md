@@ -1,47 +1,48 @@
 # 01 — Hackathon Overview
 
-**Last verified: 2026-11-05** (Day 3 of the build window — ~3 days remain)
+**Last verified: 2026-11-20** (night before the event). Source: official Luma page
+https://luma.com/le-chonk-in-london, X announcement by @MistralAI (19 Nov 2026).
 
 ## Identity
-- **Official name:** Vultr: Agent Rush Hackathon
-- **Main challenge:** "Blast Radius Zero" — web-based AI agents that do real work, with every action contained in a sandbox on Vultr
-- **Organisers:** Vultr (host/organiser, event page on community.vultr.com) × lablab.ai (platform, registration, judging infrastructure)
-- **Format:** Hybrid — online build Nov 3–8, 2026 + optional on-site showcase Nov 8 at Pierpont Place, 163 W Pierpont Ave, Salt Lake City, UT 84101 (travel NOT covered)
-- **Status on event page:** "Happening Now" / "Live Now"
+- **Official name:** Le Chonk in London: Mistral Vibe Hackathon
+- **Organiser and sole sponsor:** Mistral AI (Mistral Events). First London "Le Chonk"
+  since their worldwide hackathon (Feb 2026).
+- **Format:** one day, in person, single site. No online phase, no video submission
+  known: you pitch live in the room.
+- **Theme:** none published. De facto track: build with Mistral models and APIs. The
+  "Vibe" in the name points at Mistral Vibe (their agentic coding product).
 
-## Official sources
-| Source | URL | Role |
-|---|---|---|
-| Vultr Community event page | https://community.vultr.com/e/vultr-agent-rush-hackathon | Challenge brief, required stack, prizes |
-| lablab event page | https://lablab.build/ai-hackathons/vultr-hackathon | Registration, submission portal, team mgmt |
-| lablab rules | https://lablab.build/hackathon-rules | Judging rubric, disqualification rules |
-| lablab guidelines | https://lablab.build/ai-articles/hackathon-guidelines | General guidance |
-| lablab Discord | https://discord.gg/lablabai | Q&A, clarifications, team-finding |
-| Getting started | https://lablab.build/getting-started-guide | Submission how-to |
+## When and where
+| Item | Detail |
+|---|---|
+| Date | Saturday 21 Nov 2026 |
+| Hours | 08:30–20:30 GMT (doors 08:30) |
+| Venue | Fora - Chancery House, 53-64 Chancery Ln, London WC2A 1QS |
+| Tube | Chancery Lane (Central line) |
+| Floor details | emailed to approved attendees only |
+| Meals | breakfast, lunch, dinner provided |
 
-## Timeline (all times UTC per Vultr page; daily window 16:00–03:00 UTC)
-| Date | Event | Status |
-|---|---|---|
-| Tue Nov 3, 16:00–17:00 UTC | Kickoff + Discord Q&A | DONE |
-| Nov 3–8 | Online build phase | IN PROGRESS (day 3) |
-| Sun Nov 8 | Submission closes (exact time **NOT YET VERIFIED** — lablab schedule says "To be announced"; one third-party listing says "apply by Nov 9") | UNKNOWN exact hour |
-| Sun Nov 8 | On-site phase, Salt Lake City (approved participants only; approval criteria unpublished) | |
-| Post-event | Prize distribution "may take up to 90 days" | |
+## Prizes (Mistral API credits, not cash)
+| Place | Credits |
+|---|---|
+| 1st | $3,000 |
+| 2nd | $2,000 |
+| 3rd | $1,000 |
 
-⚠️ **ACTION: confirm exact submission deadline time in lablab Discord #vultr-hackathon channel TODAY.**
-
-## Prizes
-| Place | Cash | Vultr credits |
-|---|---|---|
-| 1st | $5,000 | $3,000 |
-| 2nd | $3,000 | $1,000 |
-| 3rd | $1,000 | $1,000 |
-| All participants | — | $200 credits |
-
-Plus up to $1,000 on-site raffle. Total pool $9,000 cash + $5,000 credits.
+Profiles are shared with Mistral's hiring team (consented on the application).
+Possible side award: the worldwide edition had "Best use of Mistral Vibe". Ask at
+check-in whether one exists here.
 
 ## Participation
-- Teams of 1–6, solo allowed; open to everyone "regardless of previous AI or coding experience"
-- Registration on lablab.ai **and** joining lablab Discord — "both are required"
-- Every participant gets $200 Vultr credits
-- **Vultr GPUs are unavailable** for this event
+- 18+, free, approval required (reviewed by the Mistral team on a rolling basis).
+- Teams of **3–5**. Solo arrivals are matched into teams on the spot at 08:30.
+- Crowd: 238 "going" on Luma (20 Nov, 14:00 GMT), so expect roughly 50–70 teams.
+- Judges: Mistral AI engineers, SWEs, TPMs, AI scientists (practitioners).
+
+## Our status
+| Item | Status | Action |
+|---|---|---|
+| Registration (2383758@brunel.ac.uk, Luma tk=n0fIwx) | **Pending Approval** at last check (20 Nov) | Check ticket tonight while signed in; if still pending, use Contact the Host |
+| Mistral API key | not confirmed | create on console.mistral.ai; try redeem code LECHONK (unverified) |
+| Team | Isaiah Paul default; need 3–5 | confirm tonight, else form on the spot |
+| Build | ChonkVid (see 09, 10) | no code before doors (see 02) |

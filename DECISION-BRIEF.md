@@ -1,5 +1,9 @@
 # Le Chonk Decision Brief (self-contained, for cold analysis)
 
+> **Scope note (21 Nov, 01:00):** the build scope was cut on 20 Nov night (no GAIA/AgentDojo,
+> city mode, masks, lockdown or boosters; one-hop trials for measurement). The build spec is
+> command-centre/10-project-architecture.md, which overrides this brief on scope.
+
 Written Fri 20 Nov 2026, night before the event. This file is the whole picture in
 one place: a fresh AI session (or teammate) can read just this and understand the
 decision, the evidence, and what to challenge. Detailed docs are alongside in this
@@ -75,8 +79,10 @@ system-prompt diff, deployed behind an approval click.
 ## The two upgrades that matter
 
 1. **Herd-immunity targeting** (from the blind panel, seed D-17): the vaccination
-   beat is not a slider; it is the computed minimal set of agents to harden that
-   provably breaks every cascade on the live contact topology. Toy becomes result.
+   beat is not a slider; it is a greedy targeted hardening set (degree /
+   betweenness) chosen from the live contact topology, shown to beat random
+   hardening at the same dose. (Revised 20 Nov night: the earlier "provably minimal
+   set" claim was dropped; optimal immunisation is NP-hard in general.) Toy becomes result.
 2. **Workflow-collapse framing:** "fleets get red-teamed one prompt at a time in a
    spreadsheet; ChonkVid runs your whole fleet as a live epidemic and returns R0,
    the variant tree, the hardening set, and a merge-ready vaccine patch in one
@@ -138,4 +144,5 @@ re-checked, not admired.
 - ENGINE-RUN-RECONCILIATION.md: why the HackForge engine's own pick was rejected.
 - evidence/: raw HackForge run outputs, the engine brief, the 980-analogue
   collision corpus (JSON), and the original event research brief.
-- command-centre/: the 11-file execution centre for the build day.
+- command-centre/: the 10-file execution centre for the build day (rewritten for
+  this event on 20 Nov night; earlier copies were from Vultr Agent Rush).

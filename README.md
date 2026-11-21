@@ -27,7 +27,7 @@ last check; confirm before doors.
 | FUNNEL-FINAL-VERDICT.md | The blind 100-seed funnel: clusters, gates, collision corpus, pairwise verdict |
 | PASS1-SANITIZED-BRIEF.md | The sanitized brief the four isolated ideators received |
 | ENGINE-RUN-RECONCILIATION.md | Why the HackForge engine's own pick was rejected on its own red team's findings |
-| command-centre/ | 11-file execution centre for the build day |
+| command-centre/ | 10-file execution centre for the build day (01–04, 06, 07, 09–11, 13) |
 | evidence/hackforge-run/ | Raw engine outputs: final recommendation, collision, feasibility |
 | evidence/briefs/ | The engine brief as submitted |
 | evidence/collision-corpus/ | 980 scraped live competitor analogues (JSON) behind the collision audit |
@@ -36,8 +36,9 @@ last check; confirm before doors.
 ## The one-line summary
 
 Fleets get red-teamed one prompt at a time in a spreadsheet; ChonkVid runs your
-whole fleet as a live epidemic and returns the R0, the variant tree, the computed
-minimal hardening set, and a merge-ready vaccine patch in one command.
+whole fleet as a live epidemic and returns the measured spread probability and R0,
+evidence that targeted hardening beats random hardening at the same dose, and a
+merge-ready vaccine patch in one command.
 
 Provenance: strategy produced 20 Nov 2026 in an OpenCode session using live
 research (organiser pages, judge recaps, winner write-ups), the local HackForge

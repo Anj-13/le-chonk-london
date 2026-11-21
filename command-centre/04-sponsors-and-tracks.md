@@ -1,46 +1,31 @@
-# 04 — Sponsor & Track Map ("Blast Radius Zero")
+# 04 — Sponsor Stack & Tracks
 
-**Last verified: 2026-11-05.** Single main challenge, two sanctioned agent patterns. No separate tracks/prizes beyond 1st/2nd/3rd.
+**Last verified: 2026-11-20.** One open track: build with Mistral. No separate tracks
+are published. A Vibe side award is possible (see 02, check-in question 5).
 
-## The challenge, distilled
-> Web-based agent that does real work, "every action contained in a sandbox on Vultr." "Containment-first is required." An agent that only chats is a demo; one that executes safely is a product.
-
-## Required stack (all mandatory unless marked)
-| Layer | Requirement | Notes |
+## Mistral stack: what we use and why
+| Product | Role in ChonkVid | Why it is load-bearing |
 |---|---|---|
-| Compute/control | **Vultr VM** as "central control and orchestration system" | Backend runs here; app + sandbox orchestrator |
-| LLM | **Vultr Serverless Inference for ALL LLM calls** | OpenAI-compatible, base URL `api.vultrinference.com/v1`, vision-capable models available. No other LLM API for agent reasoning. No Vultr GPUs in this event |
-| Sandbox | Containers or throwaway Vultr instances — "never inside the app process" | **Docker strongly recommended**; OpenSandbox, gVisor, E2B suggested |
-| Vultr API | Optional: spin up + destroy a throwaway instance per task | Strong differentiator if used (lifecycle discipline) |
+| **Ministral** (small, cheap, fast) | the agent population (30–60 agents) | hundreds of parallel calls in one day is only affordable on a small model |
+| **mistral-embed** | infection detection (paraphrase-resistant) and variant lineages | string matching misses paraphrased copies; embeddings catch them |
+| **Le Chonk** (flagship) | the "WHO" agent: situation reports, variant naming, vaccine prompt synthesis | the event's namesake model on stage doing the reasoning step |
+| **Mistral Vibe** (agentic coding CLI) | our build tool for the day | costs nothing, on-brand, worth one line in the pitch |
+| La Plateforme console | API keys, rate limits, credits | free tier exists; real limits are unknown until checked |
 
-## Pattern A — Sandboxed code execution (official example ideas)
-1. **CSV Analyst** — upload spreadsheet, plain-English questions, executed chart + code
-2. **Prove-It Code Reviewer** — run snippet/PR + tests in sandbox, report what happened
-3. **Chart Anything** — NL in, executed matplotlib/plotly image out
-4. **File Fixer** — messy CSV/JSON in, cleaned file out, executed before/after diff
-5. **Self-Healing Runner** — run code, read errors, patch & retry, retry loop visible on screen
+Model IDs and the exact Le Chonk API name: confirm on console.mistral.ai tonight. Do
+not hard-code from memory.
 
-## Pattern B — Sandboxed browser use (official example ideas)
-1. **Comparison Shopper** — product URLs in, screenshot-backed comparison table out
-2. **Form Filler** — multi-step web form filled, screenshot trail, approve-before-submit gate
-3. **Site QA Sweep** — find broken flows/links, screenshots + repro steps
-4. **Research with Receipts** — every claim links to a screenshot of its source
-5. **Page Watcher** — monitor listing/pricing pages, structured data, day-over-day diff
+## Budget reality (the real feasibility gate)
+- Free-tier rate limits may not support 30–60 live agents. Check the console tonight.
+- Estimate before the event: agents × ticks × runs = calls. Example: 40 agents × 10
+  ticks × 3 runs ≈ 1,200 chat calls + the same number of embeddings.
+- Measure transmission with cheap one-hop trials (see 10) rather than many full
+  epidemics.
+- Try redeem code **LECHONK** (unverified hint from X replies). Ask at check-in about
+  event credits.
 
-⚠️ These are *organiser-suggested ideas* — expect many teams to build them verbatim. Originality criterion punishes copies. Strategy: keep the sanctioned pattern's bones, add a differentiated product angle + a killer containment story.
-
-## Containment focus areas (judges will probe these)
-1. **Process isolation** — execution never touches host or app runtime
-2. **Secret hygiene** — no keys/credentials inside the sandbox
-3. **Resource limits** — time + memory caps per run
-4. **Lifecycle discipline** — reset/destroy environments after each task
-
-## Demo video must include
-- **"One containment moment"** — e.g., sandbox absorbing `rm -rf`, an infinite loop, or a hostile web page
-
-## Sponsor opportunity assessment
-| Angle | Verified? | Strategic value |
-|---|---|---|
-| Vultr wants a public showcase of its full agent stack (VM + Serverless Inference + API-driven lifecycle) | Strong inference (X post: "Almost nobody's building the box they act inside") | HIGH — make Vultr infrastructure the hero of the demo |
-| Vultr wants developer-adoption content (README, architecture docs) | Verified (README documentation required) | MEDIUM — clean docs double as marketing |
-| lablab wants smooth, complete submissions (video+slides+URL+repo) | Verified (submission checklist) | MEDIUM — completeness is a scored gate, not an extra |
+## Crowd lanes to avoid (expected at a Mistral one-day)
+Mistralverse clones (civilisation sims), Le Chonk chat personas, vibe-coding toys,
+voice agents, RAG assistants, "agent startup" theatre, guardrail scanners, canary/DLP
+tools. In a 980-analogue competitor scrape, epidemic simulation had 1 off-topic hit,
+guardrails 69, canary/DLP 86.

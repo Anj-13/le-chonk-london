@@ -1,22 +1,38 @@
-# 03 — Organiser & Sponsor Intelligence
+# 03 — Organiser Intelligence (Mistral AI)
 
-**Verified 2026-11-05** via research agent (30 sources fetched). Labels: Verified / Strong inference / Hypothesis.
+**Assembled 2026-11-20.** Labels: **Verified** (official page or on-record quote),
+**Inference** (our reading, not stated by Mistral).
 
-## Vultr — what they want from this event
-- **Positioning:** "enterprise agentic AI infrastructure" — Vultr Cloud Alliance + VAST Data partnership; **VX1 Cloud Compute** (launched Oct 21, 2025) promoted as "foundation for agentic AI infrastructure". [Verified: businesswire, blogs.vultr.com/vx1-cloud-compute]
-- **They already ran the dress rehearsal:** **Agent Arena Hackathon, Cerebral Valley SF, Oct 2026** (Vultr's own). Winners — [Verified: blogs.vultr.com/agent-arena-hackathon-cerebral-valley-2026]:
-  1. **Nusa** — rewrites inference kernels, runs in **"a throwaway microVM with no network"**, used Serverless Inference + VX1 → **the containment story won Vultr's own event**
-  2. **Skeleton Key** — websites→APIs for agents; "Vultr is the entire control plane" (Cloud Compute, VPC, Serverless Inference, Container Registry, Object Storage)
-  3. **RL Forge** — papers→RL environments, sandbox execution + reward verification
-- Vultr's own takeaway: they value **"the agents themselves, and the infrastructure supporting them."** [Verified quote]
-- **Strong inference:** Agent Rush = scaled-down, public-facing repeat of Agent Arena. Build what wins Agent Arena: infra-deep, real utility, *visible full-stack Vultr usage*, containment as a first-class feature.
-- **Hypothesis:** no official Vultr MCP server exists (community requested one; none found) — an MCP-style surface is novel but unsupported by Vultr.
+## Who runs it
+- **Mistral AI / Mistral Events** host and are the sole sponsor (Verified).
+- Iterate operated the Feb 2026 worldwide hackathon and published its standout
+  projects (Verified). Whether Iterate runs this London one-day is UNKNOWN.
 
-## lablab.ai — what they want
-- Platform business: they want complete, presentable submissions on their platform (video, slides, repo, URL), active Discord, smooth events. [Verified: submission checklist + rules]
-- Judging defaults to 4×1–5 criteria; events can override; community votes exist but **don't decide prizes** (Band of Agents: 147-vote favourite didn't win). [Verified]
+## What Mistral wants from the day
+| Goal | Label | What it means for us |
+|---|---|---|
+| Show Le Chonk and Ministral doing something only their models make practical | Inference | Make Mistral models the experiment itself, not a logo on a wrapper |
+| Hiring signal | Verified (profiles go to their hiring team) | Clean engineering, honest measurement and a sharp Q&A matter as much as the prize |
+| Agent-building on their stack | Inference | Real multi-agent calls through La Plateforme |
+| Developer adoption of Mistral Vibe | Inference (it is in the event name) | Build with the Vibe CLI and say so in the pitch |
 
-## Strategic implications
-1. **Make Vultr infrastructure the hero of the demo** — VM as control plane, Serverless Inference for all reasoning, Vultr API spawning/destroying throwaway instances on camera, optionally Object Storage for artifacts. Past Vultr winners showcased the full stack. [Strong inference]
-2. **Containment is the theme Vultr chose** — the winning Agent Arena project was literally "sandbox with no network". Our Airlock receipt/lifecycle concept is squarely on-thesis; the differentiator must be *product polish + business framing* (Nusa was deep-infra; Agent Rush asks for a web product).
-3. **The $200 credits + $5 VM** are enough: one VM hosts per-task containers; a throwaway instance via Vultr API is a demo garnish (60–120 s provisioning → too slow per tool call). [Strong inference, vpsbenchmarks]
+## What their judges have rewarded (worldwide edition, Feb 2026)
+- Population-scale agent systems (Mistralverse, global winner, London team).
+- Safety made explicit and measured (Ministral-3B-Sec showcased; prompt injection
+  named among the limitations strong projects tackled).
+- Numbers with baselines (Hydra Ministral: 1.33x speed-up, ~60% token acceptance).
+- Verification separated from generation (Lean Agent: a compiler as judge).
+- Execution over ideas (Sydney edition, on record); originality as the separator
+  once AI lowered the build bar (Tokyo winner's lesson).
+
+## What the judges will know (prepare for it)
+AI scientists in the room may know the prior work on self-spreading LLM payloads:
+- **Morris II / "ComPromptMized"** (Cohen, Bitton, Nassi, 2024): a self-replicating
+  prompt worm through GenAI email assistants.
+- **"Agent Smith"** (Gu et al., ICML 2024): one adversarial image spreads an infectious
+  jailbreak through up to a million multimodal agents exponentially fast.
+
+Our answer: they showed that spread happens. We measure transmissibility on Mistral
+models and show which interventions work, including targeted versus random hardening
+at the same dose. Cite both papers ourselves before a judge does. (Citations are from
+memory: check titles and authors before putting them on a slide.)

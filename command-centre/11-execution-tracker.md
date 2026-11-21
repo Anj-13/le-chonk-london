@@ -1,35 +1,36 @@
-# 11 — Execution Tracker (Airlock build)
+# 11 — Execution Tracker (ChonkVid, Sat 21 Nov 2026)
 
-**Updated: 2026-11-05, ~23:55 UK.** Repo: `airlock/` — 7 commits, **public at https://github.com/shahaman098/airlock**.
+**Created 2026-11-20 night.** Repo: none yet (first commit after 08:30 at the venue).
+Update this file at every gate.
 
-## Verified state (post-bottleneck-removal)
-- ✅ **PUBLIC REPO LIVE** (graded requirement; secrets-audited before push)
-- ✅ **All 4 chain model IDs verified against the LIVE Vultr catalog** (35 models listed: glm-5.3-flash, qwen3.8-flash-next, mimo-v2.6-flash, nemotron-3-nano-omni-30b-a3b-reasoning) — model-ID-churn risk eliminated at the catalog layer; only per-model tool support waits on the key
-- ✅ Sandbox gate **11/11** · inference client gate **8/8** · **agent-loop integration gate 11/11** (real production code path, LLM mocked at HTTP only, incl. vision QA + unknown-tool handling)
-- ✅ Attack mode **5/5 ABSORBED E2E over HTTP** (rm-rf, fork bomb, mem bomb, exfil, 2 GB zip bomb)
-- ✅ **One-command deploy:** `./deploy/deploy.sh root@VM_IP` — installs Docker+gVisor, builds image, writes key from `backend/.env`, starts services, verifies health, prints the public URL. (`/opt/airlock` path bug and service-ownership bug found and fixed; shellcheck clean.)
-- ✅ **Key onboarding is zero-thought:** paste key into `backend/.env` → `scripts/live_model_test.py` → per-model verdict table + proven chain written out. `.env` auto-loads into the app and every script.
-- ✅ Submission package banked: slides (6/6 visual pass), cover.png, paste-ready form copy + final audit checklist (`13-submission-qa.md`), video script, README with Vultr usage, MIT license
+## Tonight (Fri 20 Nov)
+- [ ] Luma ticket approved (signed in as 2383758@brunel.ac.uk); if pending, Contact the Host
+- [ ] Mistral API key created; LECHONK code tried
+- [ ] Real rate limits read off the console; call budget computed (see 04)
+- [ ] ~20-call probe: does Ministral copy a harmless chain letter into its next message? Record the rate: ____
+- [ ] Teammates confirmed (3–5)
+- [ ] Laptop charged, charger packed, Mistral Vibe CLI installed
 
-## The ONLY remaining user actions (~10 minutes of user time)
-1. **vultr.com signup** → claim $200 credits → create Inference API key → paste into `airlock/backend/.env`
-2. **Provision VM** (High Frequency, 2 vCPU/4 GB, Ubuntu 24.04; firewall allow 22/80/443) → hand ZCode the IP (or the Vultr API key and ZCode provisions too)
-3. **lablab registration + join Discord** → confirm the exact submission hour (event page schedule still "TBA" as of Nov 5 23:50 UK)
+## Build day gates
+| Time | Gate | Done? | Notes |
+|---|---|---|---|
+| 08:30–09:15 | team, repo, keys, check-in questions (02) answered | [ ] | |
+| 09:15–10:30 | mock-mode loop: network, states, log, curve | [ ] | |
+| 10:30–12:00 | real Ministral calls + embedding detection; one-hop trials running | [ ] | spread prob: ____ |
+| 12:00–13:00 | lunch; **pivot check** (09) | [ ] | stay / pivot |
+| 13:00–14:30 | vaccination: targeted vs random at equal dose | [ ] | |
+| 14:30–16:00 | WHO agent (Le Chonk) + vaccine prompt | [ ] | |
+| 16:00 | **scope freeze**; record the full backup run | [ ] | |
+| 16:00–17:30 | polish, numbers strip, guidance table | [ ] | |
+| 17:30–18:00 | rehearse the 90-second demo twice | [ ] | |
+| 18:00–20:30 | pitches | [ ] | |
 
-## The moment 1+2 land (Nov 6 plan, ~15 min of compute)
-`live_model_test.py` (2 min) → tune system prompt on 2–3 real runs → `deploy.sh root@IP` (8 min) → public URL verified from incognito → real analysis + attack runs through the URL
-
-## Nov 7
-Freeze gate 12:00 → record video per `airlock/demo/VIDEO_SCRIPT.md` on the public URL (containment moment + URL bar visible) → slides → PDF → final audit per `13-submission-qa.md`
-
-## Nov 8
-Submit on lablab **before the confirmed deadline** → incognito re-check of every link → screenshot proof of submission
-
-## Risk register (residual)
-| Risk | Status |
-|---|---|
-| Model-ID churn | ELIMINATED at catalog layer (verified live tonight); runtime chain + pinning remains |
-| Per-model tool support | Scripted one-liner on key arrival; fallback chain already in code |
-| gVisor on VM | Auto-select with runc fallback built into install.sh + runtime detection |
-| Deadline hour TBA | User action #3; worst case plan submits Nov 8 12:00 UTC |
-| VM not provisioned in time | Demo-mode app + local recordings exist as fallback, but public URL is graded — VM is the priority |
+## Measured numbers (fill in on the day)
+| Metric | Value | n | CI |
+|---|---|---|---|
+| Per-contact spread probability | | | |
+| R0 (prob × mean contacts) | | | |
+| Attack rate, no intervention | | | |
+| Attack rate, random vaccination (X%) | | | |
+| Attack rate, targeted vaccination (X%) | | | |
+| Attack rate, after the WHO vaccine prompt | | | |
