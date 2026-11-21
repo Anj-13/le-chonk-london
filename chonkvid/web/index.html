@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChonkVid</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%88%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>ChonkVid</h1>
+    <span class="tag">Flatten the curve of prompt injection</span>
+  </div>
+  <div id="mode" class="mode">…</div>
+</header>
+
+<div id="mockbanner" class="banner hidden">
+  MOCK MODE: a scripted stand-in model, not Mistral. Numbers below are for rehearsal, not measurements.
+</div>
+
+<section class="strip" id="strip">
+  <div class="card"><div class="k">Spread per contact</div><div class="v" id="n-pbase">–</div><div class="s" id="n-pbase-s">run the experiment</div></div>
+  <div class="card"><div class="k">R (early phase)</div><div class="v" id="n-r0">–</div><div class="s" id="n-r0-s"></div></div>
+  <div class="card"><div class="k">Hardened prompt</div><div class="v" id="n-phard">–</div><div class="s" id="n-phard-s"></div></div>
+  <div class="card"><div class="k">WHO vaccine</div><div class="v" id="n-pwho">–</div><div class="s" id="n-pwho-s"></div></div>
+  <div class="card wide"><div class="k">Attack rate at equal dose</div>
+    <div class="bars" id="n-bars"></div>
+    <div class="s" id="n-bars-s"></div></div>
+</section>
+
+<section class="panel byo">
+  <div class="panel-h">
+    <span>Test your agent's system prompt</span>
+    <span class="muted">per-contact spread probability ± CI, then a WHO vaccine re-measured</span>
+  </div>
+  <textarea id="byo-prompt" rows="4" spellcheck="false" placeholder="Paste the system prompt your real agent runs on…"></textarea>
+  <div class="byo-ctl">
+    <label>Trials n <input id="byo-n" type="number" min="5" max="50" value="20"></label>
+    <label class="chk"><input id="byo-who" type="checkbox" checked> WHO writes a vaccine and re-measures</label>
+    <button id="byo-run" class="primary">Measure spread</button>
+    <button id="byo-epi">Run epidemic with this prompt</button>
+  </div>
+  <div class="byo-result">
+    <div class="card"><div class="k">Before</div><div class="v" id="byo-before">–</div><div class="s" id="byo-before-s">paste a prompt and measure</div></div>
+    <div class="card"><div class="k">After vaccine</div><div class="v" id="byo-after">–</div><div class="s" id="byo-after-s"></div></div>
+    <div class="card"><div class="k">Reduction</div><div class="v" id="byo-delta">–</div><div class="s" id="byo-delta-s"></div></div>
+  </div>
+  <div class="msg infection" id="byo-example" style="display:none"></div>
+</section>
+
+<main>
+  <section class="panel net">
+    <div class="panel-h">
+      <span>Agent population</span>
+      <span class="legend">
+        <i class="dot S"></i>susceptible <i class="dot E"></i>exposed <i class="dot I"></i>infected
+        <i class="dot R"></i>recovered <i class="dot V"></i>hardened <i class="dot venue"></i>group chat
+      </span>
+    </div>
+    <svg id="net" viewBox="-1.15 -1.15 2.3 2.3" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="tickbar"><span id="tick">tick 0</span><span id="counts"></span></div>
+  </section>
+
+  <aside>
+    <section class="panel controls">
+      <div class="row">
+        <label>Policy
+          <select id="policy">
+            <option value="none">No intervention</option>
+            <option value="random">Random hardening</option>
+            <option value="targeted">Targeted hardening</option>
+          </select>
+        </label>
+        <label>Dose k <input id="k" type="number" min="0" max="60" value="8"></label>
+      </div>
+      <div class="row">
+        <label>Agents <input id="n" type="number" min="8" max="120" value="40"></label>
+        <label>Seed <input id="seed" type="number" min="0" value="0"></label>
+        <label>Ticks <input id="ticks" type="number" min="1" max="40" value="12"></label>
+      </div>
+      <div class="row checks">
+        <label><input id="who" type="checkbox" checked> WHO sitreps</label>
+        <label><input id="usewho" type="checkbox"> Use WHO vaccine</label>
+      </div>
+      <div class="row">
+        <button id="run" class="primary">Infect patient zero</button>
+        <button id="stop">Stop</button>
+      </div>
+      <div class="row">
+        <select id="runs"><option value="">Recorded runs…</option></select>
+        <button id="replay">Replay</button>
+      </div>
+      <div id="err" class="err hidden"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-h"><span>Epidemic curve</span></div>
+      <svg id="curve" viewBox="0 0 400 170" preserveAspectRatio="none"></svg>
+    </section>
+
+    <section class="panel">
+      <div class="panel-h"><span>WHO feed (Le Chonk)</span></div>
+      <div id="who-feed" class="feed small"></div>
+    </section>
+  </aside>
+</main>
+
+<section class="lower">
+  <section class="panel">
+    <div class="panel-h"><span>Message ticker</span><span class="muted" id="sel"></span></div>
+    <div id="ticker" class="feed"></div>
+  </section>
+  <section class="panel">
+    <div class="panel-h"><span>Vaccine patch (system prompt diff)</span></div>
+    <pre id="diff" class="diff"></pre>
+    <div class="panel-h"><span>Guidance</span></div>
+    <table id="guide"></table>
+  </section>
+</section>
+
+<footer>
+  Harmless chain-letter payload, sim-local agents, no real users or platforms.
+  Infection = the agent's own next message carries the payload (canary or embedding match to the parent's text).
+</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>

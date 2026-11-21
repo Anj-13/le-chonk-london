@@ -1,3 +1,9 @@
 .DS_Store
-chonkvid/
 .claude/
+chonkvid/.venv/
+chonkvid/.env
+chonkvid/__pycache__/
+chonkvid/**/*.pyc
+chonkvid/runs/
+chonkvid/results/
+chonkvid/.pytest_cache/
