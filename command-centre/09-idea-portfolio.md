@@ -11,7 +11,10 @@ and a Le Chonk-written vaccine prompt.
 **Plan B: functional-redundancy failover.** The flagship model "dies" mid-demo; the
 fleet falls back to pre-qualified small-model cover with measured per-task fidelity
 floors. Reuses the population, logging and dashboard.
-**Pivot trigger:** by ~13:00 the live one-hop trials show spread probability near 0
+**Theme gate (09:20):** the theme is only announced at the 09:00 kick-off. If ChonkVid
+cannot be framed to it in one honest sentence, switch to Plan B or the best-fitting
+shortlist idea before team formation at 09:40.
+**Pivot trigger:** by 12:30 the live one-hop trials show spread probability near 0
 or near 1 and tuning the payload wording does not fix it.
 
 ## Shortlist
@@ -29,4 +32,4 @@ or near 1 and tuning the payload wording does not fix it.
 - The "blind panel rediscovered the epidemic idea" argument is circular: that panel
   was assigned epidemiology. Do not use it in the pitch or as validation.
 - The "10/10" validation was self-generated. The real test is whether Ministral
-  actually copies the payload. **Run the ~20-call probe tonight or first thing.**
+  actually copies the payload. **Run the ~20-call probe at 11:00, first thing after the mock loop works.**

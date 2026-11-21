@@ -1,5 +1,8 @@
 # Le Chonk in London: Mistral Vibe Hackathon
 
+> **Event update (21 Nov, 01:45):** registration approved; hack 10:00–18:00, submission hard stop
+> 18:00, pitches 19:00–21:00; credits link on the day. The day plan below is superseded by command-centre/11.
+
 > **Superseded on scope (21 Nov, 01:00):** masks, lockdown, quarantine-first demo, GAIA tasks and
 > city mode were cut on 20 Nov night. Build to command-centre/10 and 11; demo arc in command-centre/07.
 

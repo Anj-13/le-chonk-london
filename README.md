@@ -1,7 +1,7 @@
 # Le Chonk in London: Mistral Vibe Hackathon (21 Nov 2026)
 
 Direction, strategy and full decision evidence for the one-day in-person Mistral
-hackathon at Fora - Chancery House, London, Sat 21 Nov 2026 (08:30-20:30 GMT).
+hackathon at Fora - Chancery House, London, Sat 21 Nov 2026 (arrive 08:30; hack 10:00-18:00; pitches 19:00-21:00 GMT).
 Team build: **ChonkVid**, an epidemic simulation of self-spreading prompts through
 a live population of Mistral agents, with measured R0 and a computed vaccine result.
 
@@ -13,8 +13,8 @@ reader should attack).
 Pre-event (committed Fri 20 Nov 2026). Strategy phase complete: the pick survived
 a 100-seed blind ideation funnel, a collision audit over 980 scraped competitor
 analogues, and a 10/10 winner-pattern validation. Build happens on event day.
-Registration (2383758@brunel.ac.uk, Luma tk=n0fIwx) was Pending Approval at the
-last check; confirm before doors.
+**Registration approved** (Mistral acceptance email, 20 Nov). Be in by 08:30 with the
+Luma QR and ID; submission hard stop 18:00. Day plan: command-centre/11-execution-tracker.md.
 
 ## Contents
 

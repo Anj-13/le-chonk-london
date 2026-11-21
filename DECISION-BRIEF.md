@@ -1,5 +1,9 @@
 # Le Chonk Decision Brief (self-contained, for cold analysis)
 
+> **Event update (21 Nov, 01:45):** registration approved; agenda is hack 10:00–18:00, submission
+> hard stop 18:00, pitches 19:00–21:00, theme announced at the 09:00 kick-off. Credits link on the day.
+> Gates: command-centre/11. The "Tonight's checklist" below is superseded.
+
 > **Scope note (21 Nov, 01:00):** the build scope was cut on 20 Nov night (no GAIA/AgentDojo,
 > city mode, masks, lockdown or boosters; one-hop trials for measurement). The build spec is
 > command-centre/10-project-architecture.md, which overrides this brief on scope.

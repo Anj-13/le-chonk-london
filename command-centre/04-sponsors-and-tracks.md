@@ -10,19 +10,19 @@ are published. A Vibe side award is possible (see 02, check-in question 5).
 | **mistral-embed** | infection detection (paraphrase-resistant) and variant lineages | string matching misses paraphrased copies; embeddings catch them |
 | **Le Chonk** (flagship) | the "WHO" agent: situation reports, variant naming, vaccine prompt synthesis | the event's namesake model on stage doing the reasoning step |
 | **Mistral Vibe** (agentic coding CLI) | our build tool for the day | costs nothing, on-brand, worth one line in the pitch |
-| La Plateforme console | API keys, rate limits, credits | free tier exists; real limits are unknown until checked |
+| La Plateforme console | API keys, rate limits, credits | event credits via a link on the day; real limits unknown until checked |
 
-Model IDs and the exact Le Chonk API name: confirm on console.mistral.ai tonight. Do
+Model IDs and the exact Le Chonk API name: confirm on console.mistral.ai at 08:30. Do
 not hard-code from memory.
 
 ## Budget reality (the real feasibility gate)
-- Free-tier rate limits may not support 30–60 live agents. Check the console tonight.
+- Event-credit rate limits may not support 30–60 live agents. Check the console at 08:30.
 - Estimate before the event: agents × ticks × runs = calls. Example: 40 agents × 10
   ticks × 3 runs ≈ 1,200 chat calls + the same number of embeddings.
 - Measure transmission with cheap one-hop trials (see 10) rather than many full
   epidemics.
-- Try redeem code **LECHONK** (unverified hint from X replies). Ask at check-in about
-  event credits.
+- **Every attendee gets free API credits**; the access link is shared on the day
+  (acceptance email). Ask the mentors about the rate limits on those credits.
 
 ## Crowd lanes to avoid (expected at a Mistral one-day)
 Mistralverse clones (civilisation sims), Le Chonk chat personas, vibe-coding toys,

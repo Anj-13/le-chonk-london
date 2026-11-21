@@ -1,11 +1,12 @@
 # 02 — Rules & Compliance
 
-**Last verified: 2026-11-20.** Source: https://luma.com/le-chonk-in-london. Mistral
+**Last verified: 2026-11-21** (acceptance email). Source: https://luma.com/le-chonk-in-london. Mistral
 published very little in the way of rules. Anything not on the page is marked UNKNOWN
 and goes on the check-in question list below.
 
 ## Judging
-- **No public rubric.** Judges are Mistral engineers, SWEs, TPMs and AI scientists.
+- **Rubric announced at the 09:00 kick-off.** Write it into this file at 09:20.
+- Until then: no public rubric. Judges are Mistral engineers, SWEs, TPMs and AI scientists.
 - **Best proxy (same organiser, Sydney edition of the worldwide hackathon):**
   technical depth, creativity, usefulness, quality of demo, alignment with objectives,
   equally weighted. Treat these five as the rubric until told otherwise.
@@ -20,25 +21,31 @@ and goes on the check-in question list below.
 | Age | 18+ |
 | Team size | 3–5 people |
 | Entry | free, approval required |
-| Build window | one day, 08:30–20:30 |
+| Build window | hack time 10:00–18:00; **submission hard stop 18:00** |
+| Deliverable | a working app, not slides (email) |
+| Attendance | in person only; arrive by 08:30, spot may be released after 08:45 |
+| Bring | laptop, charger, Luma QR, ID |
 
 ## UNKNOWN: ask at check-in (first thing, before writing code)
 1. Can any code or scaffolding be prepared beforehand? **Default: no.** Write all code
    at the venue. Design docs (this folder) are fine.
-2. What exactly is submitted: repo link, slides, a form, or only the live pitch?
-3. Pitch length and Q&A length.
+2. Submission format at 18:00: repo link, form, deployed URL, video? (Submission is
+   confirmed; the format is not.)
+3. Pitch length and Q&A length (pitches 19:00–21:00; finals format?).
 4. Must the project use specific Mistral models (Le Chonk? Vibe?)?
 5. Is there a "Best use of Mistral Vibe" or any other side award?
-6. Are there event API credits or raised rate limits for participants?
+6. Rate limits on the event credits (credits themselves are confirmed).
 7. Must the repo be public, and is there a licence requirement?
 
 ## Compliance checklist
 | # | Item | Status | Owner |
 |---|---|---|---|
-| 1 | Luma ticket approved | **OPEN** (Pending Approval at last check) | You, tonight |
+| 1 | Luma ticket approved | **DONE** (acceptance email) | — |
 | 2 | Team of 3–5 confirmed | OPEN | You / on the spot |
-| 3 | Mistral API key + real rate limits checked | OPEN | You, tonight |
+| 3 | Event credits redeemed + real rate limits checked | at check-in (link shared on the day) | You |
 | 4 | Check-in questions 1–7 answered | at doors | Pitch lead |
-| 5 | All code written at the venue (fresh repo, first commit after 08:30) | planned | Team |
+| 5 | All code written at the venue (fresh repo, first commit after 10:00 hack start) | planned | Team |
+| 8 | Project submitted before 18:00 hard stop | planned (submit by 17:45) | Pitch lead |
+| 9 | Joined Discord #hackathon-access | OPEN | You, before doors |
 | 6 | Mistral models load-bearing in the build | planned (Ministral, mistral-embed, Le Chonk) | Team |
 | 7 | Safety framing stated in the first sentence of the pitch | planned | Pitch lead |

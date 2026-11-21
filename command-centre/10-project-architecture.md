@@ -1,6 +1,6 @@
 # 10 — Project Architecture & Execution Plan: "ChonkVid" (primary concept)
 
-**Created 2026-11-20 night, before the one-day build (Sat 21 Nov, 08:30-20:30 GMT,
+**Created 2026-11-20 night, before the one-day build (Sat 21 Nov, hack 10:00-18:00 GMT,
 Fora - Chancery House, London). Design only: no code written before the event
 (Mistral published no pre-built-code rules; code happens at the venue).**
 **Revised 2026-11-21 01:00:** the night's corrections are folded into the body below;
@@ -17,7 +17,7 @@ beats random hardening at the same dose, ending on a Le Chonk-synthesised vaccin
 1. **Scope cut.** Core only: contact network + real Ministral transmission + SEIR
    curve + targeted-vs-random vaccination at equal dose + Le Chonk WHO vaccine
    prompt. **Cut:** GAIA tasks, AgentDojo, city mode, masks, lockdown, boosters.
-   Phylogeny only if everything else is done by 16:00.
+   Phylogeny only if everything else is done by the 15:30 freeze.
 2. **Measure with one-hop trials, not repeated epidemics.** Give an agent the payload
    and check whether its next message carries it; repeat n times. That gives a
    binomial spread probability with CI; R0 = probability × mean contacts. Cheap, and
@@ -45,7 +45,7 @@ beats random hardening at the same dose, ending on a Le Chonk-synthesised vaccin
   ticks, publishes situation reports, and synthesises the vaccine system-prompt patch
   from collected infection samples; its patch is then re-measured with one-hop trials.
   Final frame: the vaccine diff plus the guidance table.
-- **Stretch (only after the 16:00 gate passes):** variant phylogeny from embedding
+- **Stretch (only after the 15:30 freeze gate passes):** variant phylogeny from embedding
   lineages; quarantine of detected positives as a second intervention.
 - **Explicitly excluded:** GAIA/AgentDojo task layers, city mode, masks, lockdown,
   boosters, auth, settings pages, persistence, multiple venues, fine-tuning, any
@@ -86,28 +86,33 @@ before spending a single real call.
   random vs targeted at the same dose; the WHO vaccine re-measured the same way.
   Numbers on screen before the animation.
 
-## Schedule (Sat 21 Nov, UK time; pitches from ~18:00)
+## Schedule (Sat 21 Nov, UK time; official agenda from the acceptance email)
 
-Matches the gates in 11.
+Hack time is 10:00–18:00 (8 hours), submission is a hard stop at 18:00, pitches
+19:00–21:00. Gates match 11.
 
-| When | Gate | Output |
-|---|---|---|
-| 08:30-09:15 | doors, team, repo, API keys, check-in questions (02) | fresh repo; stub agents talking on mock mode |
-| 09:15-10:30 | mock-mode full loop: network, states, log, curve | dashboard skeleton fed by mocked events (frontend person parallel) |
-| 10:30-12:00 | real Ministral calls + embed detection; one-hop trials running | first measured spread probability |
-| 12:00-13:00 | lunch (provided); **pivot check** | stay or pivot (rule below) |
-| 13:00-14:30 | vaccination: targeted vs random at equal dose | attack-rate comparison with n |
-| 14:30-16:00 | WHO agent (Le Chonk) + vaccine prompt, re-measured | live situation reports; vaccine diff + its measured effect |
-| 16:00 | **scope freeze**; record the full backup run | recorded backup + frozen demo |
-| 16:00-17:30 | polish, numbers strip, guidance table; stretch only if green | final frame ready |
-| 17:30-18:00 | rehearse the 90-second demo twice (see 07, 13) | pitch-ready |
-| 18:00-20:30 | pitches + Q&A | done |
+| Time | Gate |
+|---|---|
+| 08:30–09:00 | in by 08:30 with QR + ID; redeem credits link; read rate limits |
+| 09:00–09:20 | kick-off: write **theme + judging criteria** into 02 |
+| 09:20–09:40 | **theme-fit check** (09): ChonkVid fits / reframe / Plan B; check-in questions to mentors |
+| 09:40–10:00 | team formation; roles (10); pitch the plan in 60 s |
+| 10:00–11:00 | fresh repo (first commit after 10:00); mock-mode loop: network, states, log, curve |
+| 11:00–12:00 | ~20-call probe, then real Ministral + embedding detection; one-hop trials running |
+| 12:00–12:30 | lunch; **pivot check at 12:30** (09) |
+| 12:30–14:00 | vaccination: targeted vs random at equal dose |
+| 14:00–15:30 | WHO agent (Le Chonk) + vaccine prompt, re-measured |
+| 15:30 | **scope freeze**; record the full backup run |
+| 15:30–17:15 | polish, numbers strip, guidance table, README with results |
+| 17:15–17:45 | **submit** (target 17:45; hard stop 18:00) + screenshot of the confirmation |
+| 18:00–19:00 | apéro: rehearse the 90-second demo twice, run 13 QA |
+| 19:00–21:00 | pitches to the judges and finals |
 
 **Team split (4):** A) sim core, world, log; B) LLM layer, detection, trials;
 C) dashboard; D) WHO agent, vaccination comparison, demo script + recording. With 3:
 A+B merge, C+D merge.
 
-**Pivot rule (pre-decided):** if by ~13:00 the one-hop trials show spread probability
+**Pivot rule (pre-decided):** if by 12:30 the one-hop trials show spread probability
 near 0 or near 1 and tuning the payload wording does not fix it, pivot to Plan B
 (functional-redundancy failover: the flagship "dies" mid-demo and the fleet degrades
 to pre-qualified small-model cover with measured fidelity floors). Reused unchanged:
@@ -118,10 +123,12 @@ FUNNEL-FINAL-VERDICT.md.
 
 | Risk | L | I | Mitigation |
 |---|---|---|---|
-| Ministral never (or always) copies the payload | M | H | ~20-call probe before building; tune payload wording in the first real hour; pivot rule at 13:00 |
+| Ministral never (or always) copies the payload | M | H | ~20-call probe before building; tune payload wording in the first real hour; pivot rule at 12:30 |
 | API latency / rate limits | M | M | size N from console limits; batch + parallel + backoff; small N on stage; pre-recorded run |
 | Toy-risk verdict from judges | M | H | lead with measured numbers (probability ± CI, R0, equal-dose comparison) before the animation |
 | Embed threshold misfires (false infections) | M | M | threshold knob + visible confirmation in the ticker; everything logged |
 | Overclaim caught in Q&A | M | H | say "targeted beats random at equal dose"; never "provably" or "minimal" (see 07, 13) |
 | WHO agent latency mid-demo | M | M | pre-generate one situation report; live-generate only the vaccine |
-| Registration still pending at doors | L | H | check ticket before leaving; if pending, talk to hosts at check-in citing the NVIDIA Hack for Impact win |
+| Theme announced at 09:00 doesn't fit | M | H | 09:20 theme-fit check (09): reframe ChonkVid to the theme, else Plan B, else a fresh idea before 10:00 |
+| Late submission | L | H | submit by 17:45, screenshot the confirmation; hard stop 18:00 |
+| Late arrival loses the spot | L | H | in by 08:30; spots can go to the waitlist after 08:45 |

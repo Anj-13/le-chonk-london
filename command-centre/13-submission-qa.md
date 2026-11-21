@@ -1,7 +1,8 @@
 # 13 — Submission & Demo QA
 
-**Created 2026-11-20 night.** The submission format is UNKNOWN until check-in (02,
-question 2). Prepare everything below anyway; it covers any likely format.
+**Created 2026-11-20 night; updated 2026-11-21.** Submission is a **hard stop at 18:00**
+(acceptance email); target 17:45. The format (form, repo, URL) is announced at kick-off
+(02, question 2). The brief is a **working app, not slides**. Prepare everything below anyway; it covers any likely format.
 
 ## Pitch copy (paste-ready)
 - **Title:** ChonkVid
@@ -21,7 +22,12 @@ question 2). Prepare everything below anyway; it covers any likely format.
 - **Safety:** harmless chain-letter payload, sim-local agents, no real users or
   platforms.
 
-## Pre-pitch QA (run at 17:30)
+## Submission QA (run at 17:15, submit by 17:45)
+- [ ] Submitted in the announced format before 17:45; confirmation screenshotted
+- [ ] Submitted link opens in an incognito window
+- [ ] README results table filled with today's numbers
+
+## Pre-pitch QA (run 18:00–19:00, during the apéro)
 - [ ] Backup recording plays offline, full screen, with sound off
 - [ ] Live run starts from one command or button in under 10 seconds
 - [ ] Numbers strip shows real values from today's runs (no placeholders)
@@ -34,5 +40,5 @@ question 2). Prepare everything below anyway; it covers any likely format.
 
 ## If submission needs a repo
 - [ ] README: what it is, how to run (mock mode and live), measured results table
-- [ ] Clear first commit after 08:30 on 21 Nov (shows code written at the event)
+- [ ] Clear first commit after 10:00 on 21 Nov (shows code written at the event)
 - [ ] `.env.example` without real keys

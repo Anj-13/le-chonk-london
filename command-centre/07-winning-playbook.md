@@ -5,7 +5,7 @@
 ## Honest odds
 About 50–70 teams, so any team's top-3 base rate is about 5%. A clean, distinctive,
 measured ChonkVid is roughly **15–25% for top 3 and about 10% for 1st** (rough). The
-two things that move it most: a real measured result on screen by ~16:00, and
+two things that move it most: a real measured result on screen by the 15:30 freeze, and
 surviving the first hard technical question.
 
 ## Tactics, ranked
@@ -27,6 +27,9 @@ surviving the first hard technical question.
    Chonk WHO; built with Mistral Vibe.
 8. **End on an artefact.** The vaccine system-prompt diff plus the guidance table
    (time to majority infection under each policy).
+
+Rehearse during the 18:00–19:00 apéro: the app is already submitted by then, so the
+live demo must run from the submitted version.
 
 ## 90-second demo arc
 1. (0–10s) "Agents are a population now, and populations get epidemics. This is a safe
