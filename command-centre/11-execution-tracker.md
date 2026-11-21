@@ -46,7 +46,7 @@ Update this file at every gate.
 | Time | Gate | Done? | Notes |
 |---|---|---|---|
 | 08:30–09:00 | in by 08:30 with QR + ID; redeem credits; key into `chonkvid/.env`; `python -m chonkvid check` then `probe` | [ ] | limits: ____ · probe p: ____ |
-| 09:00–09:20 | kick-off: write **theme + judging criteria** into 02 | [ ] | |
+| 09:00–09:20 | kick-off: write **theme + judging criteria** into 02 | [x] | done 21 Nov: Track_01 anything goes (Vibe + Le Chonk = Mistral Large 4); Bonus_02 Agents/Workflows +£500; Voxtral £250; **demo video required**; 5-min jury pitch |
 | 09:20–09:40 | **theme-fit check** (09): ChonkVid fits / reframe / Plan B; check-in questions to mentors | [ ] | |
 | 09:40–10:00 | team formation; roles (10); pitch the plan in 60 s | [ ] | |
 | 10:00–11:00 | tune payload wording + threshold from the probe; set RPS/concurrency to the limits; live dashboard run at N=20 | [ ] | |
@@ -56,8 +56,9 @@ Update this file at every gate.
 | 14:00–15:30 | WHO agent (Le Chonk) + vaccine prompt, re-measured | [ ] | |
 | 15:30 | **scope freeze**; record the full backup run | [ ] | |
 | 15:30–17:15 | polish, numbers strip, guidance table, README with results | [ ] | |
-| 17:15–17:45 | **submit** (target 17:45; hard stop 18:00) + screenshot of the confirmation | [ ] | |
-| 18:00–19:00 | apéro: rehearse the 90-second demo twice, run 13 QA | [ ] | |
+| 16:30–17:15 | **record the demo video** (required with the submission) | [ ] | |
+| 17:15–17:45 | **submit** project + demo video (target 17:45; hard stop 18:00) + screenshot of the confirmation | [ ] | |
+| 18:00–19:00 | rehearse the **5-minute** pitch twice (90-second live demo inside it), run 13 QA | [ ] | |
 | 19:00–21:00 | pitches to the judges and finals | [ ] | |
 
 ## Measured numbers (fill in on the day)

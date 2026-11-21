@@ -22,9 +22,20 @@ defence works. ChonkVid gives them those numbers.
 **Infection detection** has two signals, and every verdict logs both:
 1. The exact canary marker in the agent's own next message.
 2. The cosine similarity from `mistral-embed` between each paragraph of that message
-   and the *parent's carried text*. This catches paraphrased mutations that drop the
-   marker. It compares paragraphs, not whole messages, so an ordinary reply that only
+   and the *original payload*. This catches near-verbatim copies that drop the marker.
+   It compares paragraphs, not whole messages, so an ordinary reply that only
    *mentions* the chain letter is not counted as infected (there is a test for this).
+
+We first also matched each reply against its *parent's* carried text, to follow
+mutated variants down a lineage. The live run showed this was wrong: once the payload
+mutates into an ordinary work message ("the #ChonkChain FAQ draft..."), every
+same-topic reply matched it, and 109 of 207 downstream "infections" had no marker.
+Clean echoes (0.72–0.84) overlapped real carriers, so lineage matching was removed.
+In practice the canary decides almost every verdict; the embedding is a backstop.
+
+**Held-out vaccine check.** The WHO vaccine is written from #ChonkChain samples, so it
+could simply ban that string. The experiment also measures it against a different
+payload with a marker it has never seen (`#LuckyLoop`).
 
 **What we do not claim:** we do not claim a "provably minimal" hardening set. Optimal
 immunisation is NP-hard in general. We show that greedy targeting beats random
