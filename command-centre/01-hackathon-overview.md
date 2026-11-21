@@ -61,5 +61,5 @@ check-in whether one exists here.
 |---|---|---|
 | Registration | **Approved** (acceptance email, 20 Nov) | bring the Luma QR + ID; be in by 08:30 |
 | Mistral API credits | every attendee gets free credits; access link shared on the day | redeem at check-in; read the real rate limits before sizing N |
-| Team | Isaiah Paul default; need 3–5 | confirm tonight, else form on the spot |
+| Team | Isaiah Paul default; need 3–5 | confirm before doors, else team formation at 09:40 |
 | Build | ChonkVid (see 09, 10) | no code before doors (see 02) |
