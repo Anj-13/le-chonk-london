@@ -263,29 +263,18 @@ measures transmissibility on Mistral models and tests which interventions stop i
 - All agents are local to the simulation.
 - No real users, platforms or messages are involved.
 
-## Supabase (optional persistence)
+## Shared database
 
-Experiments and dashboard recordings stay on disk by default (`results/`, `runs/`). To
-mirror them to Postgres (e.g. Supabase project `ywglfnnbjefqirjjtbhb`):
+Apply the numbered migrations in `supabase/migrations` to the development project.
+Set the application settings described in [the database guide](../docs/SUPABASE_BACKEND.md).
+For trusted CLI writers also set `DATABASE_URL`, `SUPABASE_PROJECT_ID`, and
+`SUPABASE_SCENARIO_ID`. Use the same Supabase project for SQL and API access.
 
-1. Copy the project database password from the Supabase dashboard (Settings → Database).
-2. Add to `.env` (percent-encode special characters in the password):
-
-```bash
-DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@db.ywglfnnbjefqirjjtbhb.supabase.co:5432/postgres?sslmode=require
-```
-
-3. Install the driver and create tables:
-
-```bash
-pip install 'psycopg[binary]>=3.2'
-python -m chonkvid db-init
-python -m chonkvid db-check
-```
-
-When `DATABASE_URL` is set, `python -m chonkvid experiment`, `test-prompt`, and live
-dashboard runs upsert into `chonkvid_results` and `chonkvid_runs`. `/api/status` returns
-`database: true` once connected.
+To import existing main-branch data from the connected database, stop legacy writers
+and run `python -m chonkvid db-import --project PROJECT_UUID --scenario SCENARIO_UUID`.
+Choose the project authorized to own those recordings and reports. The import runs in
+one transaction, retains the source tables, and preserves filenames and event order.
+The dashboard accepts a Supabase access token for shared run recording and replay.
 
 ## Provenance
 

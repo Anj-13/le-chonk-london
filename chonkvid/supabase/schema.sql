@@ -1,6 +1,4 @@
--- ChonkVid tables for Supabase Postgres (project ref ywglfnnbjefqirjjtbhb).
--- Applied automatically by: python -m chonkvid db-init
-
+-- Historical main-branch source schema for db-import. Use supabase/migrations for new installations.
 CREATE TABLE IF NOT EXISTS chonkvid_results (
     id BIGSERIAL PRIMARY KEY,
     kind TEXT NOT NULL,
